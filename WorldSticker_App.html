@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0a1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WorldSticker">
+<title>WorldSticker ⚽</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1628;--bg2:#111e35;--bg3:#172443;--card:#131f38;
+  --gold:#f5c518;--gold2:#e8a800;
+  --green:#00c853;--red:#ff3d3d;--orange:#ff6d00;
+  --text:#f0f4ff;--muted:#6b80a8;--border:rgba(255,255,255,0.08);
+  --r:14px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Barlow',sans-serif;color:var(--text)}
+#app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative}
+
+/* ════ SCREENS ════ */
+.scr{display:none;flex-direction:column;height:100%;overflow:hidden;animation:fadeIn .2s ease}
+.scr.on{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ════ LOGIN SCREEN ════ */
+#scr-login{
+  background:radial-gradient(ellipse at 50% -10%,rgba(245,197,24,.12),transparent 60%),var(--bg);
+  align-items:center;justify-content:center;padding:32px 24px;text-align:center
+}
+.login-ball{font-size:56px;margin-bottom:16px;display:block;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:2px;color:var(--gold);line-height:1}
+.login-sub{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:3px;color:var(--muted);margin-bottom:40px;margin-top:4px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;width:100%;max-width:340px;text-align:left}
+.lc-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.5px;margin-bottom:4px}
+.lc-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.lc-label{font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;margin-bottom:6px;display:block}
+.lc-name{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px 14px;color:var(--text);font-size:15px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:12px;-webkit-appearance:none;appearance:none}
+.lc-name:focus{border-color:rgba(245,197,24,.4)}
+/* Data de nascimento — 3 selects lado a lado */
+.date-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.date-sel{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px 8px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;-webkit-appearance:none;appearance:none;text-align:center;cursor:pointer}
+.date-sel:focus{border-color:rgba(245,197,24,.4)}
+.date-sel option{background:var(--bg3)}
+.lc-btn{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:var(--rs);padding:16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.5px;cursor:pointer;transition:opacity .15s,transform .1s}
+.lc-btn:active{opacity:.88;transform:scale(.98)}
+.lc-err{color:var(--red);font-size:12px;text-align:center;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.3px}
+.lc-hint{margin-top:18px;text-align:center;font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ════ BLOCKED SCREEN ════ */
+#scr-blocked{align-items:center;justify-content:center;padding:32px;text-align:center}
+.blk-icon{font-size:64px;margin-bottom:20px}
+.blk-title{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--red);margin-bottom:10px}
+.blk-msg{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px;max-width:300px}
+.blk-btn{background:#25d366;color:#fff;border:none;border-radius:99px;padding:14px 28px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+
+/* ════ APP SCREEN ════ */
+#scr-app{background:var(--bg)}
+header{background:var(--bg2);padding:12px 16px 0;flex-shrink:0;border-bottom:1px solid var(--border)}
+.htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--gold);line-height:1}
+.logo-name{font-size:12px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1.5px;opacity:.55;margin-top:1px}
+.hright{display:flex;gap:8px;align-items:center}
+.icon-btn{background:var(--bg3);border:1px solid var(--border);border-radius:22px;padding:7px 12px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;color:var(--muted);transition:all .15s;letter-spacing:.3px}
+.icon-btn:active{transform:scale(.93)}
+.wpp-btn{background:#25d366;color:#fff;border:none;border-radius:22px;padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:transform .1s}
+.wpp-btn:active{transform:scale(.93)}
+.wpp-btn svg{width:14px;height:14px;fill:#fff;flex-shrink:0}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding-bottom:10px}
+.kpi{background:var(--bg3);border-radius:var(--rs);padding:7px 3px;text-align:center;border:1px solid var(--border)}
+.kv{font-family:'Bebas Neue',sans-serif;font-size:21px;line-height:1}
+.kl{font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.3px;opacity:.55;margin-top:1px}
+.kpi.kp .kv{color:var(--gold)}
+.kpi.kt .kv{color:var(--green)}
+.kpi.kf .kv{color:var(--red)}
+.kpi.kr .kv{color:var(--orange)}
+
+/* Progress */
+.prog-wrap{padding:0 0 10px}
+.prog-bg{background:var(--bg3);border-radius:99px;height:5px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:99px;transition:width .5s}
+.prog-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+
+/* Nav */
+nav{display:flex}
+nav button{flex:1;background:none;border:none;color:var(--muted);padding:10px 4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+nav button.on{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* Main scroll */
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
+main::-webkit-scrollbar{display:none}
+
+/* Search & chips */
+.sw{position:relative;margin-bottom:10px}
+.sw input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 10px 10px 34px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;-webkit-appearance:none;appearance:none}
+.sw input::placeholder{color:var(--muted)}
+.sw input:focus{border-color:rgba(245,197,24,.3)}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
+.chips{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:6px 12px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3px;cursor:pointer;white-space:nowrap;color:var(--muted);transition:all .15s;flex-shrink:0}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#0a1628}
+.chip:active{transform:scale(.93)}
+
+/* Group cards */
+.gc{background:var(--card);border-radius:var(--r);border:1px solid var(--border);margin-bottom:10px;overflow:hidden}
+.gh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none}
+.ghl{display:flex;align-items:center;gap:10px}
+.gletter{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;min-width:22px}
+.gname{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;opacity:.6}
+.gteams{font-size:11px;opacity:.4;margin-top:1px}
+.gpct{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold)}
+.chev{color:var(--muted);font-size:16px;transition:transform .2s;margin-left:4px}
+.gc.open .chev{transform:rotate(180deg)}
+.gbody{display:none;border-top:1px solid var(--border)}
+.gc.open .gbody{display:block}
+
+/* Team */
+.team-sec{border-bottom:1px solid var(--border)}
+.team-sec:last-child{border-bottom:none}
+.th{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--bg3)}
+.tf{font-size:19px}.tn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;flex:1}
+.tms{display:flex;gap:5px;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.mh{color:var(--green)}.mf{color:var(--red)}.md{color:var(--orange)}
+
+/* Stickers */
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:9px 14px}
+.st{border-radius:var(--rs);border:1.5px solid var(--border);aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .1s;background:var(--bg2);min-height:50px;position:relative}
+.st:active{transform:scale(.85)}
+.sn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;line-height:1}
+.si2{font-size:15px;line-height:1;margin-top:1px}
+.st.have{background:rgba(0,200,83,.12);border-color:var(--green)}
+.st.have .sn{color:var(--green)}
+.st.miss{background:var(--bg2)}
+.st.miss .sn{color:var(--muted)}
+.st.dup{background:rgba(255,109,0,.12);border-color:var(--orange)}
+.st.dup .sn{color:var(--orange)}
+
+/* Trocas tab */
+.troca-item{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.ti-flag{font-size:21px}.ti-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px}
+.ti-nums{font-size:12px;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:600}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty div{font-size:38px;margin-bottom:10px}
+.empty p{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.3px}
+
+/* Toast */
+#toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(26,46,80,.96);backdrop-filter:blur(8px);color:var(--text);border:1px solid var(--border);border-radius:22px;padding:10px 20px;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;z-index:999}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.bsafe{height:env(safe-area-inset-bottom,0px);flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ LOGIN ══ -->
+<div class="scr" id="scr-login">
+  <span class="login-ball">⚽</span>
+  <div class="login-logo">WorldSticker</div>
+  <div class="login-sub">Copa do Mundo 2026</div>
+
+  <div class="login-card">
+    <div class="lc-title">Entrar no seu álbum</div>
+    <div class="lc-sub">Use o nome e a data de nascimento que foram cadastrados na compra.</div>
+
+    <label class="lc-label">Seu nome</label>
+    <input class="lc-name" type="text" id="inp-name" placeholder="Ex: João Silva" autocomplete="name" autocorrect="off">
+
+    <label class="lc-label">Data de nascimento</label>
+    <div class="date-row">
+      <select class="date-sel" id="inp-day"><option value="">Dia</option></select>
+      <select class="date-sel" id="inp-month">
+        <option value="">Mês</option>
+        <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option>
+        <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
+        <option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option>
+        <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+      </select>
+      <select class="date-sel" id="inp-year"><option value="">Ano</option></select>
+    </div>
+
+    <button class="lc-btn" onclick="doLogin()">Entrar no Álbum →</button>
+    <div class="lc-err" id="login-err"></div>
+    <div class="lc-hint">Não tem acesso ainda?<br><strong style="color:var(--gold)">Fale com o administrador.</strong></div>
+  </div>
+</div>
+
+<!-- ══ BLOCKED ══ -->
+<div class="scr" id="scr-blocked">
+  <div class="blk-icon">🚫</div>
+  <div class="blk-title">Acesso Bloqueado</div>
+  <p class="blk-msg">Este álbum foi bloqueado pelo administrador.<br>Se você acredita que é um erro, entre em contato:</p>
+  <button class="blk-btn" onclick="contactSupport()">
+    <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Falar com Suporte
+  </button>
+</div>
+
+<!-- ══ APP ══ -->
+<div class="scr" id="scr-app">
+  <header>
+    <div class="htop">
+      <div class="logo">
+        ⚽ WorldSticker
+        <div class="logo-name" id="user-name-display">Copa 2026</div>
+      </div>
+      <div class="hright">
+        <button class="icon-btn" onclick="doLogout()">Sair</button>
+        <button class="wpp-btn" onclick="shareWpp()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Trocas
+        </button>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi kp"><div class="kv" id="k-pct">0%</div><div class="kl">Progresso</div></div>
+      <div class="kpi kt"><div class="kv" id="k-have">0</div><div class="kl">✅ Tenho</div></div>
+      <div class="kpi kf"><div class="kv" id="k-miss">0</div><div class="kl">❌ Faltam</div></div>
+      <div class="kpi kr"><div class="kv" id="k-dup">0</div><div class="kl">🔄 Trocas</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="prog-lbl"><span id="pl">0 de 960</span><span id="pr">0%</span></div>
+    </div>
+    <nav>
+      <button class="on" onclick="goTab('album',this)">📋 Álbum</button>
+      <button onclick="goTab('trocas',this)">🔄 Trocas</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ALBUM -->
+    <div id="tab-album">
+      <div class="sw">
+        <span class="si">🔍</span>
+        <input type="search" placeholder="Buscar seleção..." oninput="filterGroups(this.value)">
+      </div>
+      <div class="chips">
+        <div class="chip on" onclick="setFilter('all',this)">Todos</div>
+        <div class="chip" onclick="setFilter('miss',this)">❌ Faltam</div>
+        <div class="chip" onclick="setFilter('have',this)">✅ Tenho</div>
+        <div class="chip" onclick="setFilter('dup',this)">🔄 Trocas</div>
+      </div>
+      <div id="groups"></div>
+    </div>
+
+    <!-- TROCAS -->
+    <div id="tab-trocas" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px">🔄 Para Trocar</div>
+        <button class="wpp-btn" onclick="shareWpp()">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Compartilhar
+        </button>
+      </div>
+      <div id="trocas-list"></div>
+    </div>
+  </main>
+  <div class="bsafe"></div>
+</div>
+
+</div><!-- #app -->
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// DADOS — grupos e seleções
+// ════════════════════════════════════════════════════════
+const GRUPOS = {
+  A:[{n:"México",f:"🇲🇽"},{n:"África do Sul",f:"🇿🇦"},{n:"Coreia do Sul",f:"🇰🇷"},{n:"Rep. Tcheca",f:"🇨🇿"}],
+  B:[{n:"Canadá",f:"🇨🇦"},{n:"Bósnia",f:"🇧🇦"},{n:"Catar",f:"🇶🇦"},{n:"Suíça",f:"🇨🇭"}],
+  C:[{n:"Brasil",f:"🇧🇷"},{n:"Marrocos",f:"🇲🇦"},{n:"Haiti",f:"🇭🇹"},{n:"Escócia",f:"🏴"}],
+  D:[{n:"Estados Unidos",f:"🇺🇸"},{n:"Paraguai",f:"🇵🇾"},{n:"Austrália",f:"🇦🇺"},{n:"Turquia",f:"🇹🇷"}],
+  E:[{n:"Alemanha",f:"🇩🇪"},{n:"Curaçao",f:"🇨🇼"},{n:"Costa do Marfim",f:"🇨🇮"},{n:"Equador",f:"🇪🇨"}],
+  F:[{n:"Holanda",f:"🇳🇱"},{n:"Japão",f:"🇯🇵"},{n:"Suécia",f:"🇸🇪"},{n:"Tunísia",f:"🇹🇳"}],
+  G:[{n:"Bélgica",f:"🇧🇪"},{n:"Egito",f:"🇪🇬"},{n:"Irã",f:"🇮🇷"},{n:"Nova Zelândia",f:"🇳🇿"}],
+  H:[{n:"Espanha",f:"🇪🇸"},{n:"Cabo Verde",f:"🇨🇻"},{n:"Arábia Saudita",f:"🇸🇦"},{n:"Uruguai",f:"🇺🇾"}],
+  I:[{n:"França",f:"🇫🇷"},{n:"Senegal",f:"🇸🇳"},{n:"Iraque",f:"🇮🇶"},{n:"Noruega",f:"🇳🇴"}],
+  J:[{n:"Argentina",f:"🇦🇷"},{n:"Argélia",f:"🇩🇿"},{n:"Áustria",f:"🇦🇹"},{n:"Jordânia",f:"🇯🇴"}],
+  K:[{n:"Portugal",f:"🇵🇹"},{n:"Congo",f:"🇨🇩"},{n:"Uzbequistão",f:"🇺🇿"},{n:"Colômbia",f:"🇨🇴"}],
+  L:[{n:"Inglaterra",f:"🏴"},{n:"Croácia",f:"🇭🇷"},{n:"Gana",f:"🇬🇭"},{n:"Panamá",f:"🇵🇦"}]
+};
+const GC={A:"#00b894",B:"#0984e3",C:"#fdcb6e",D:"#6c5ce7",E:"#e17055",F:"#00cec9",G:"#fd79a8",H:"#e84393",I:"#55efc4",J:"#a29bfe",K:"#ff7675",L:"#74b9ff"};
+const TOTAL=12*4*20;
+const SUPPORT_WPP='5583999999999';
+
+// ════════════════════════════════════════════════════════
+// BASE DE USUÁRIOS — editável pelo admin
+// Em produção: carregar de API/Supabase
+// Formato: { chave: { nome, nascimento:"DD/MM/AAAA", status } }
+// A chave é nome normalizado + nascimento, gerada pelo admin
+// ════════════════════════════════════════════════════════
+function loadUsers(){
+  // Usuários cadastrados pelo admin ficam no localStorage com chave 'ws_users'
+  // O admin.html escreve neste mesmo key
+  try{
+    const u=JSON.parse(localStorage.getItem('ws_users')||'[]');
+    return u; // array de {id, nome, nascimento:"DD/MM/AAAA", status, wpp}
+  }catch(e){return[];}
+}
+
+// ════════════════════════════════════════════════════════
+// LOGIN — nome + data de nascimento
+// ════════════════════════════════════════════════════════
+let currentUser=null; // {id, nome, ...}
+
+function norm(s){ return s.toLowerCase().trim().replace(/\s+/g,' '); }
+
+function doLogin(){
+  const nameVal=document.getElementById('inp-name').value.trim();
+  const day=document.getElementById('inp-day').value;
+  const month=document.getElementById('inp-month').value;
+  const year=document.getElementById('inp-year').value;
+  const err=document.getElementById('login-err');
+  err.textContent='';
+
+  if(!nameVal){ err.textContent='Digite seu nome.'; return; }
+  if(!day||!month||!year){ err.textContent='Selecione sua data de nascimento completa.'; return; }
+
+  const nascimento=`${day}/${month}/${year}`;
+  const users=loadUsers();
+
+  // Buscar usuário por nome normalizado + nascimento exato
+  const found=users.find(u=>
+    norm(u.nome)===norm(nameVal) &&
+    u.nascimento===nascimento
+  );
+
+  if(!found){
+    err.textContent='Nome ou data de nascimento incorretos. Verifique e tente novamente.';
+    return;
+  }
+  if(found.status==='bloqueado'){
+    showScreen('scr-blocked');
+    return;
+  }
+
+  // Login ok — salvar sessão
+  currentUser=found;
+  sessionStorage.setItem('ws_session', JSON.stringify({id:found.id, nome:found.nome, nascimento}));
+  startApp();
+}
+
+function startApp(){
+  document.getElementById('user-name-display').textContent=currentUser.nome.split(' ')[0];
+  showScreen('scr-app');
+  buildGroups();
+  updateHeader();
+}
+
+function doLogout(){
+  sessionStorage.removeItem('ws_session');
+  currentUser=null;
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-day').value='';
+  document.getElementById('inp-month').value='';
+  document.getElementById('inp-year').value='';
+  showScreen('scr-login');
+}
+
+function contactSupport(){
+  window.open(`https://wa.me/${SUPPORT_WPP}?text=Ol%C3%A1!+Meu+acesso+ao+WorldSticker+est%C3%A1+bloqueado.+Pode+me+ajudar?`,'_blank');
+}
+
+// ════════════════════════════════════════════════════════
+// ESTADO DO ÁLBUM (por usuário)
+// ════════════════════════════════════════════════════════
+function albumKey(){ return `ws_album_${currentUser.id}`; }
+function loadState(){ try{return JSON.parse(localStorage.getItem(albumKey())||'{}');}catch(e){return{};} }
+function saveState(s){ localStorage.setItem(albumKey(),JSON.stringify(s)); }
+
+let state={};
+function getS(g,ti,n){ return state[`${g}-${ti}-${n}`]||0; }
+function cycleS(g,ti,n){ const k=`${g}-${ti}-${n}`; state[k]=((state[k]||0)+1)%3; saveState(state); }
+
+// ════════════════════════════════════════════════════════
+// UI
+// ════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+function calcTotals(){
+  let h=0,m=0,d=0;
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    for(let n=1;n<=20;n++){const s=getS(g,ti,n);if(s===1)h++;else if(s===2)d++;else m++;}
+  }));
+  return{h,m,d};
+}
+
+function updateHeader(){
+  const{h,m,d}=calcTotals();
+  const pct=Math.round(h/TOTAL*100);
+  document.getElementById('k-pct').textContent=pct+'%';
+  document.getElementById('k-have').textContent=h;
+  document.getElementById('k-miss').textContent=m;
+  document.getElementById('k-dup').textContent=d;
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('pl').textContent=`${h} de ${TOTAL}`;
+  document.getElementById('pr').textContent=pct+'%';
+}
+
+const SC=['miss','have','dup'];
+const SI=['❌','✅','🔄'];
+
+function buildGroups(){
+  state=loadState();
+  const c=document.getElementById('groups');c.innerHTML='';
+  Object.keys(GRUPOS).forEach(g=>{
+    const el=document.createElement('div');el.className='gc';el.id=`gc-${g}`;
+    el.innerHTML=`
+      <div class="gh" onclick="togG('${g}')">
+        <div class="ghl">
+          <span class="gletter" style="color:${GC[g]}">G${g}</span>
+          <div>
+            <div class="gname">GRUPO ${g}</div>
+            <div class="gteams">${GRUPOS[g].map(t=>t.f).join(' ')}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center">
+          <span class="gpct" id="gp-${g}">0%</span>
+          <span class="chev">⌄</span>
+        </div>
+      </div>
+      <div class="gbody" id="gb-${g}">${GRUPOS[g].map((t,ti)=>buildTeam(g,ti,t)).join('')}</div>`;
+    c.appendChild(el);
+  });
+  updGStats();
+}
+
+function buildTeam(g,ti,t){
+  let s='';
+  for(let n=1;n<=20;n++){
+    const v=getS(g,ti,n);
+    s+=`<div class="st ${SC[v]}" onclick="tap('${g}',${ti},${n},this)"><span class="sn">${n}</span><span class="si2">${SI[v]}</span></div>`;
+  }
+  return`<div class="team-sec"><div class="th"><span class="tf">${t.f}</span><span class="tn">${t.n}</span><div class="tms" id="ts-${g}-${ti}"></div></div><div class="sg" id="sg-${g}-${ti}">${s}</div></div>`;
+}
+
+function tap(g,ti,n,el){
+  cycleS(g,ti,n);
+  const v=getS(g,ti,n);
+  el.className=`st ${SC[v]}`;
+  el.querySelector('.si2').textContent=SI[v];
+  updateHeader(); updGStats(); updTeam(g,ti);
+  if(document.getElementById('tab-trocas').style.display!=='none') buildTrocas();
+  if(navigator.vibrate) navigator.vibrate(22);
+  showToast(['❌ Falta','✅ Colada!','🔄 Para troca'][v]);
+}
+
+function updGStats(){
+  Object.keys(GRUPOS).forEach(g=>{
+    let h=0;
+    GRUPOS[g].forEach((t,ti)=>{for(let n=1;n<=20;n++) if(getS(g,ti,n)===1)h++;});
+    const el=document.getElementById(`gp-${g}`);
+    if(el) el.textContent=Math.round(h/(GRUPOS[g].length*20)*100)+'%';
+    GRUPOS[g].forEach((t,ti)=>updTeam(g,ti));
+  });
+}
+
+function updTeam(g,ti){
+  const el=document.getElementById(`ts-${g}-${ti}`);if(!el)return;
+  let h=0,d=0,m=0;
+  for(let n=1;n<=20;n++){const v=getS(g,ti,n);if(v===1)h++;else if(v===2)d++;else m++;}
+  el.innerHTML=`<span class="mh">✅${h}</span><span class="mf">❌${m}</span>${d?`<span class="md">🔄${d}</span>`:''}`;
+}
+
+function togG(g){ document.getElementById(`gc-${g}`).classList.toggle('open'); }
+
+function filterGroups(q){
+  const qn=q.toLowerCase();
+  Object.keys(GRUPOS).forEach(g=>{
+    const match=('grupo '+g).includes(qn)||GRUPOS[g].some(t=>t.n.toLowerCase().includes(qn));
+    const el=document.getElementById(`gc-${g}`);
+    el.style.display=match?'':'none';
+    if(match&&qn) el.classList.add('open');
+  });
+}
+
+function setFilter(f,el){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    const grid=document.getElementById(`sg-${g}-${ti}`);if(!grid)return;
+    grid.querySelectorAll('.st').forEach((sEl,i)=>{
+      const v=getS(g,ti,i+1);
+      sEl.style.display=(f==='all'||(f==='have'&&v===1)||(f==='miss'&&v===0)||(f==='dup'&&v===2))?'':'none';
+    });
+  }));
+}
+
+function goTab(t,el){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  document.getElementById('tab-album').style.display=t==='album'?'':'none';
+  document.getElementById('tab-trocas').style.display=t==='trocas'?'':'none';
+  if(t==='trocas') buildTrocas();
+}
+
+function buildTrocas(){
+  const list=document.getElementById('trocas-list');list.innerHTML='';let found=false;
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    const ns=[];for(let n=1;n<=20;n++) if(getS(g,ti,n)===2) ns.push(n);
+    if(!ns.length) return;found=true;
+    const el=document.createElement('div');el.className='troca-item';
+    el.innerHTML=`<span class="ti-flag">${t.f}</span><div style="flex:1"><div class="ti-team">${t.n}</div><div class="ti-nums">Fig.: ${ns.join(', ')}</div></div><span style="color:var(--orange);font-size:20px;font-weight:700">${ns.length}</span>`;
+    list.appendChild(el);
+  }));
+  if(!found) list.innerHTML=`<div class="empty"><div>🔄</div><p>Nenhuma repetida ainda.<br>Marque figurinhas como 🔄.</p></div>`;
+}
+
+function shareWpp(){
+  const lines=[`⚽ *WorldSticker — Minhas Trocas Copa 2026* 🔥\n`];
+  let any=false;
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    const ns=[];for(let n=1;n<=20;n++) if(getS(g,ti,n)===2) ns.push(n);
+    if(!ns.length) return;any=true;
+    lines.push(`${t.f} *${t.n}*: fig. ${ns.join(', ')}`);
+  }));
+  if(!any){ showToast('Nenhuma marcada como 🔄 ainda!'); return; }
+  const{h,d}=calcTotals();
+  lines.push(`\n📊 ${Math.round(h/TOTAL*100)}% completo | ${d} repetidas`);
+  lines.push('📲 WorldSticker — Copa 2026');
+  window.open('https://wa.me/?text='+encodeURIComponent(lines.join('\n')),'_blank');
+}
+
+let toastT;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1800);
+}
+
+// ════════════════════════════════════════════════════════
+// PREENCHER SELECTS DE DIA E ANO
+// ════════════════════════════════════════════════════════
+(function fillDateSelects(){
+  const day=document.getElementById('inp-day');
+  for(let i=1;i<=31;i++){
+    const o=document.createElement('option');
+    o.value=String(i).padStart(2,'0');o.textContent=i;
+    day.appendChild(o);
+  }
+  const year=document.getElementById('inp-year');
+  const cur=new Date().getFullYear();
+  for(let y=cur-5;y>=cur-80;y--){
+    const o=document.createElement('option');o.value=y;o.textContent=y;year.appendChild(o);
+  }
+})();
+
+// ════════════════════════════════════════════════════════
+// BOOT — verificar sessão existente
+// ════════════════════════════════════════════════════════
+(function boot(){
+  const sess=sessionStorage.getItem('ws_session');
+  if(sess){
+    try{
+      const{id,nome,nascimento}=JSON.parse(sess);
+      const users=loadUsers();
+      const u=users.find(x=>x.id===id);
+      if(u&&u.status!=='bloqueado'){
+        currentUser=u;startApp();return;
+      }
+    }catch(e){}
+    sessionStorage.removeItem('ws_session');
+  }
+  showScreen('scr-login');
+})();
+</script>
+</body>
+</html>
