@@ -14,18 +14,18 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
 
-/* ── LOGIN ── */
+/* LOGIN */
 #scr-login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
 .login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px;width:100%;max-width:360px;text-align:center}
 .l-logo{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--gold);margin-bottom:4px}
 .l-sub{font-size:12px;color:var(--muted);margin-bottom:32px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px}
-.fi{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:12px}
+.fi{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:12px;appearance:none;-webkit-appearance:none}
 .fi:focus{border-color:rgba(245,197,24,.4)}
-.btn-gold{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:8px;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;cursor:pointer;transition:opacity .15s}
+.btn-gold{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:8px;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;cursor:pointer}
 .btn-gold:hover{opacity:.9}
 .l-err{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
 
-/* ── ADMIN LAYOUT ── */
+/* LAYOUT */
 #scr-admin{display:none}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
 .tb-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold)}
@@ -37,118 +37,137 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .layout{display:flex;min-height:calc(100vh - 52px)}
 .sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0}
 .nav-sect{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px;padding:14px 20px 6px;opacity:.5}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3px;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all .15s}
 .nav-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
 .nav-item.on{color:var(--gold);border-left-color:var(--gold);background:rgba(245,197,24,.05)}
 
-.content{flex:1;padding:28px;overflow-y:auto;min-height:calc(100vh - 52px)}
+.content{flex:1;padding:28px;overflow-y:auto}
 .page{display:none}.page.on{display:block}
-.pg-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.5px;margin-bottom:2px}
+.pg-title{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:2px}
 .pg-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
 
-/* ── STATS ── */
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px}
 .sv{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;margin-bottom:4px}
 .sl{font-size:12px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px}
-.sc2{font-size:11px;margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--muted)}
 
-/* ── PANEL CARDS ── */
+/* PANELS */
 .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:18px}
-.panel-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;margin-bottom:16px}
+.panel-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.panel-hint{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
 
-/* ── ADD USER ── */
-.add-form{display:grid;grid-template-columns:1fr 1fr 140px 120px auto;gap:10px;align-items:end}
+/* FORM */
+.add-grid{display:grid;grid-template-columns:1fr 1fr 160px 130px auto;gap:10px;align-items:end}
 .fl{font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px;margin-bottom:5px;display:block}
-.fi2{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none}
+.fi2{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;appearance:none;-webkit-appearance:none}
 .fi2:focus{border-color:rgba(245,197,24,.4)}
-.btn-add{background:var(--gold);color:#0a1628;border:none;border-radius:7px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;height:41px}
+.btn-add{background:var(--gold);color:#0a1628;border:none;border-radius:7px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer;height:41px;white-space:nowrap}
 .btn-add:hover{opacity:.9}
+.add-err{color:var(--red);font-size:12px;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;min-height:16px}
 
-/* ── TABLE ── */
+/* EXPORT BOX */
+.export-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.7}
+.export-box strong{color:var(--text)}
+.export-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-export{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:10px 16px;color:var(--text);font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-export:hover{border-color:var(--gold);color:var(--gold)}
+.btn-export.green{border-color:rgba(63,185,80,.4);color:var(--green)}
+.btn-export.green:hover{background:rgba(63,185,80,.08)}
+.btn-export.blue{border-color:rgba(88,166,255,.4);color:var(--blue)}
+.btn-export.blue:hover{background:rgba(88,166,255,.08)}
+
+/* TABLE */
 .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.tbl-toolbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
-.tbl-search{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:220px}
+.tbl-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px}
+.tbl-bar-left{display:flex;align-items:center;gap:10px}
+.tbl-count{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;white-space:nowrap}
+.tbl-search{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:220px;appearance:none;-webkit-appearance:none}
 .tbl-search:focus{border-color:rgba(245,197,24,.3)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{background:var(--bg2);padding:11px 16px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,.015)}
-.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3px}
 .b-green{background:rgba(63,185,80,.15);color:var(--green)}
 .b-red{background:rgba(248,81,73,.15);color:var(--red)}
-.b-blue{background:rgba(88,166,255,.15);color:var(--blue)}
 .b-gray{background:rgba(255,255,255,.07);color:var(--muted)}
-.ab{background:transparent;border:1px solid var(--border);border-radius:5px;padding:4px 9px;color:var(--muted);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;margin-right:3px;transition:all .15s}
+.ab{background:transparent;border:1px solid var(--border);border-radius:5px;padding:4px 9px;color:var(--muted);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;margin-right:3px;transition:all .15s;white-space:nowrap}
 .ab:hover{border-color:var(--blue);color:var(--blue)}
 .ab.danger:hover{border-color:var(--red);color:var(--red)}
 .ab.ok:hover{border-color:var(--green);color:var(--green)}
-.progress-mini{background:var(--bg);border-radius:99px;height:4px;overflow:hidden;width:80px;display:inline-block;vertical-align:middle;margin-right:6px}
-.pm-fill{height:100%;background:var(--gold);border-radius:99px}
 .empty-row td{text-align:center;color:var(--muted);padding:32px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px}
 
-/* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;width:460px;max-width:94vw}
-.mo-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px}
-.mo-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
-.mo-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-.btn-cancel{background:transparent;border:1px solid var(--border);border-radius:7px;padding:9px 18px;color:var(--muted);font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer}
-.btn-danger{background:var(--red);color:#fff;border:none;border-radius:7px;padding:9px 18px;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer}
+/* CSV IMPORT */
+.csv-area{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical;min-height:90px;outline:none;appearance:none;-webkit-appearance:none}
+.csv-area:focus{border-color:rgba(245,197,24,.3)}
 
-/* ── CONFIG ── */
+/* CONFIG */
 .cfg-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .cfg-row:last-child{border-bottom:none}
 .cfg-key{font-size:13px;font-weight:500}
 .cfg-hint{font-size:12px;color:var(--muted);margin-top:2px}
-.fi-inline{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none}
-.fi-inline:focus{border-color:rgba(245,197,24,.4)}
+.fi-sm{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:200px;appearance:none;-webkit-appearance:none}
+.fi-sm:focus{border-color:rgba(245,197,24,.4)}
 
-/* ── TOAST ── */
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;width:440px;max-width:94vw}
+.mo-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;margin-bottom:6px}
+.mo-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.mo-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{background:transparent;border:1px solid var(--border);border-radius:7px;padding:9px 18px;color:var(--muted);font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer}
+.btn-danger{background:var(--red);color:#fff;border:none;border-radius:7px;padding:9px 18px;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer}
+
+/* TOAST */
 #toast{position:fixed;bottom:24px;right:24px;background:#2d333b;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;opacity:0;transition:all .22s;pointer-events:none;transform:translateY(8px);z-index:999}
 #toast.on{opacity:1;transform:translateY(0)}
 
 @media(max-width:900px){
   .layout{flex-direction:column}
-  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:8px 0;display:flex;flex-wrap:wrap}
-  .nav-item{padding:8px 14px;font-size:12px}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:8px 0;display:flex;overflow-x:auto}
   .nav-sect{display:none}
+  .nav-item{padding:8px 14px;white-space:nowrap;border-left:none;border-bottom:2px solid transparent}
+  .nav-item.on{border-left:none;border-bottom-color:var(--gold)}
   .stats{grid-template-columns:repeat(2,1fr)}
-  .add-form{grid-template-columns:1fr 1fr}
+  .add-grid{grid-template-columns:1fr 1fr}
+  .content{padding:16px}
 }
 </style>
 </head>
 <body>
 
-<!-- ════ LOGIN ════ -->
+<!-- LOGIN -->
 <div id="scr-login">
   <div class="login-card">
     <div class="l-logo">⚽ WorldSticker</div>
-    <div class="l-sub">Painel Admin</div>
-    <input class="fi" type="text" id="ai-user" placeholder="Usuário" autocomplete="username">
+    <div class="l-sub">Painel Administrativo</div>
+    <input class="fi" type="text" id="ai-user" placeholder="Usuário admin" autocomplete="username">
     <input class="fi" type="password" id="ai-pass" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     <button class="btn-gold" onclick="login()">Entrar →</button>
     <div class="l-err" id="l-err"></div>
   </div>
 </div>
 
-<!-- ════ ADMIN ════ -->
+<!-- ADMIN -->
 <div id="scr-admin">
   <div class="topbar">
     <div class="tb-logo">⚽ WorldSticker Admin</div>
     <div class="tb-right">
-      <span class="tb-user" id="tb-u">admin</span>
+      <span class="tb-user" id="tb-u"></span>
       <button class="btn-sm" onclick="logout()">Sair</button>
     </div>
   </div>
+
   <div class="layout">
     <div class="sidebar">
       <div class="nav-sect">Menu</div>
-      <div class="nav-item on" onclick="goPage('dashboard',this)"><span>📊</span> Dashboard</div>
-      <div class="nav-item" onclick="goPage('usuarios',this)"><span>👥</span> Usuários</div>
-      <div class="nav-item" onclick="goPage('configs',this)"><span>⚙️</span> Configurações</div>
+      <div class="nav-item on" onclick="goPage('dashboard',this)">📊 Dashboard</div>
+      <div class="nav-item" onclick="goPage('usuarios',this)">👥 Usuários</div>
+      <div class="nav-item" onclick="goPage('exportar',this)">📤 Exportar para App</div>
+      <div class="nav-item" onclick="goPage('configs',this)">⚙️ Configurações</div>
     </div>
 
     <div class="content">
@@ -156,33 +175,41 @@ tr:hover td{background:rgba(255,255,255,.015)}
       <!-- DASHBOARD -->
       <div class="page on" id="pg-dashboard">
         <div class="pg-title">Dashboard</div>
-        <div class="pg-sub">Visão geral em tempo real</div>
+        <div class="pg-sub">Visão geral dos usuários cadastrados</div>
         <div class="stats">
-          <div class="stat"><div class="sv" style="color:var(--gold)" id="s-total">0</div><div class="sl">Usuários Cadastrados</div><div class="sc2" id="s-total-h">0 hoje</div></div>
-          <div class="stat"><div class="sv" style="color:var(--green)" id="s-ativo">0</div><div class="sl">Ativos</div><div class="sc2">Com acesso</div></div>
-          <div class="stat"><div class="sv" style="color:var(--red)" id="s-bloq">0</div><div class="sl">Bloqueados</div><div class="sc2">Sem acesso</div></div>
-          <div class="stat"><div class="sv" style="color:var(--blue)" id="s-hoje">0</div><div class="sl">Cadastrados Hoje</div><div class="sc2" id="s-h-sub">—</div></div>
+          <div class="stat"><div class="sv" style="color:var(--gold)" id="s-total">0</div><div class="sl">Total Cadastrados</div></div>
+          <div class="stat"><div class="sv" style="color:var(--green)" id="s-ativo">0</div><div class="sl">Ativos</div></div>
+          <div class="stat"><div class="sv" style="color:var(--red)" id="s-bloq">0</div><div class="sl">Bloqueados</div></div>
+          <div class="stat"><div class="sv" style="color:var(--blue)" id="s-hoje">0</div><div class="sl">Adicionados Hoje</div></div>
         </div>
         <div class="panel">
           <div class="panel-title">Usuários Recentes</div>
           <div class="tbl-wrap" style="border:none">
-            <table><thead><tr><th>Nome</th><th>Nascimento</th><th>Status</th><th>Cadastrado em</th></tr></thead>
-            <tbody id="rec-tbody"></tbody></table>
+            <table>
+              <thead><tr><th>Nome</th><th>Data de Nascimento</th><th>WhatsApp</th><th>Status</th><th>Cadastrado em</th></tr></thead>
+              <tbody id="rec-tbody"></tbody>
+            </table>
           </div>
+        </div>
+        <!-- Lembrete exportar -->
+        <div class="export-box">
+          ⚠️ <strong>Lembrete:</strong> Toda vez que adicionar ou alterar usuários, vá em
+          <strong>Exportar para App</strong> e gere um novo arquivo <code>usuarios.json</code>
+          para atualizar o WorldSticker App.
         </div>
       </div>
 
       <!-- USUÁRIOS -->
       <div class="page" id="pg-usuarios">
         <div class="pg-title">Usuários</div>
-        <div class="pg-sub">Gerencie quem tem acesso ao WorldSticker</div>
+        <div class="pg-sub">Cadastre quem vai ter acesso ao WorldSticker App</div>
 
-        <!-- Add user -->
+        <!-- Adicionar -->
         <div class="panel">
           <div class="panel-title">➕ Adicionar Novo Usuário</div>
-          <div class="add-form">
+          <div class="add-grid">
             <div>
-              <label class="fl">Nome completo</label>
+              <label class="fl">Nome completo *</label>
               <input class="fi2" type="text" id="a-nome" placeholder="Ex: João Silva">
             </div>
             <div>
@@ -190,14 +217,14 @@ tr:hover td{background:rgba(255,255,255,.015)}
               <input class="fi2" type="text" id="a-wpp" placeholder="83999999999">
             </div>
             <div>
-              <label class="fl">Data de nascimento</label>
-              <input class="fi2" type="date" id="a-nasc" placeholder="DD/MM/AAAA">
+              <label class="fl">Data de nascimento *</label>
+              <input class="fi2" type="date" id="a-nasc">
             </div>
             <div>
               <label class="fl">Status</label>
               <select class="fi2" id="a-status">
-                <option value="ativo">Ativo</option>
-                <option value="bloqueado">Bloqueado</option>
+                <option value="ativo">✅ Ativo</option>
+                <option value="bloqueado">🔒 Bloqueado</option>
               </select>
             </div>
             <div>
@@ -205,80 +232,134 @@ tr:hover td{background:rgba(255,255,255,.015)}
               <button class="btn-add" onclick="addUser()">+ Adicionar</button>
             </div>
           </div>
-          <div id="add-err" style="color:var(--red);font-size:12px;margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;min-height:16px"></div>
+          <div class="add-err" id="add-err"></div>
         </div>
 
-        <!-- Importar em massa -->
+        <!-- Importar lote -->
         <div class="panel">
           <div class="panel-title">📋 Cadastro em Lote (CSV)</div>
-          <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">
-            Cole abaixo no formato: <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:12px">Nome, DD/MM/AAAA, WhatsApp (opcional)</code> — uma por linha.
+          <div class="panel-hint">
+            Cole abaixo no formato: <code style="background:var(--bg);padding:2px 6px;border-radius:4px">Nome, DD/MM/AAAA, WhatsApp</code> — uma por linha. WhatsApp é opcional.
           </div>
-          <textarea id="csv-input" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical;min-height:80px;outline:none" placeholder="João Silva, 15/06/2003, 83999999999&#10;Maria Santos, 22/11/1998&#10;Pedro Lima, 01/03/2005, 83988888888"></textarea>
-          <div style="margin-top:10px;display:flex;gap:10px;align-items:center">
-            <button class="btn-add" onclick="importCSV()">📥 Importar</button>
+          <textarea class="csv-area" id="csv-input" placeholder="João Silva, 15/06/2003, 83999999999&#10;Maria Santos, 22/11/1998&#10;Pedro Lima, 01/03/2005, 83988888888"></textarea>
+          <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn-add" onclick="importCSV()">📥 Importar Lista</button>
             <span id="csv-result" style="font-size:13px;color:var(--green);font-family:'Barlow Condensed',sans-serif;font-weight:600"></span>
           </div>
         </div>
 
-        <!-- Table -->
+        <!-- Tabela -->
         <div class="tbl-wrap">
-          <div class="tbl-toolbar">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px" id="user-count">0 usuários</div>
-            <input class="tbl-search" type="search" placeholder="Buscar nome ou WhatsApp..." oninput="renderTable(this.value)">
+          <div class="tbl-bar">
+            <div class="tbl-bar-left">
+              <span class="tbl-count" id="user-count">0 usuários</span>
+            </div>
+            <input class="tbl-search" type="search" placeholder="Buscar nome..." oninput="renderTable(this.value)">
           </div>
           <table>
-            <thead><tr><th>Nome</th><th>Data de Nascimento</th><th>WhatsApp</th><th>Status</th><th>Cadastrado</th><th>Ações</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Data de Nascimento</th>
+                <th>WhatsApp</th>
+                <th>Status</th>
+                <th>Cadastrado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
             <tbody id="user-tbody"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- EXPORTAR -->
+      <div class="page" id="pg-exportar">
+        <div class="pg-title">Exportar para App</div>
+        <div class="pg-sub">Gere o arquivo de usuários e carregue no WorldSticker App</div>
+
+        <div class="panel">
+          <div class="panel-title">📤 Como funciona</div>
+          <div class="panel-hint">
+            O WorldSticker Admin e o WorldSticker App são arquivos <strong>separados e independentes</strong>.<br><br>
+            Para que o App reconheça os usuários cadastrados aqui, você precisa:<br><br>
+            <strong>1.</strong> Clicar em <strong>"Baixar usuarios.json"</strong> abaixo<br>
+            <strong>2.</strong> Abrir o <strong>WorldSticker App</strong> no navegador<br>
+            <strong>3.</strong> Clicar em <strong>"Carregar lista de usuários"</strong> e selecionar o arquivo<br>
+            <strong>4.</strong> Pronto — o app já reconhece todos os usuários!<br><br>
+            ⚡ Repita sempre que adicionar novos usuários ou alterar algum.
+          </div>
+
+          <div style="background:var(--bg);border:1px solid rgba(245,197,24,.2);border-radius:8px;padding:16px;margin-bottom:16px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gold);margin-bottom:6px">📊 Resumo da exportação</div>
+            <div style="font-size:13px;color:var(--muted)" id="export-summary">Carregando...</div>
+          </div>
+
+          <div class="export-actions">
+            <button class="btn-export green" onclick="downloadJSON()">
+              ⬇️ Baixar usuarios.json
+            </button>
+            <button class="btn-export blue" onclick="copyJSON()">
+              📋 Copiar JSON
+            </button>
+            <button class="btn-export" onclick="sendWppBulk()">
+              📲 Avisar usuários via WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <!-- Prévia do JSON -->
+        <div class="panel">
+          <div class="panel-title">👁 Prévia do arquivo</div>
+          <div id="json-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:12px;color:var(--muted);font-family:monospace;white-space:pre-wrap;max-height:300px;overflow-y:auto;line-height:1.5"></div>
         </div>
       </div>
 
       <!-- CONFIGS -->
       <div class="page" id="pg-configs">
         <div class="pg-title">Configurações</div>
-        <div class="pg-sub">Parâmetros gerais do WorldSticker</div>
+        <div class="pg-sub">Parâmetros do painel admin</div>
 
         <div class="panel">
-          <div class="panel-title">🌐 Produto</div>
+          <div class="panel-title">🔐 Acesso Admin</div>
           <div class="cfg-row">
-            <div><div class="cfg-key">Nome do produto</div></div>
-            <input class="fi-inline" type="text" id="cfg-nome" value="WorldSticker" style="width:200px">
+            <div><div class="cfg-key">Usuário</div></div>
+            <input class="fi-sm" type="text" id="cfg-user" placeholder="admin">
           </div>
           <div class="cfg-row">
-            <div><div class="cfg-key">WhatsApp de suporte</div><div class="cfg-hint">Número que aparece no botão de contato</div></div>
-            <input class="fi-inline" type="text" id="cfg-wpp" value="5583999999999" style="width:180px">
-          </div>
-          <div class="cfg-row">
-            <div><div class="cfg-key">Álbum ativo</div><div class="cfg-hint">Copa do Mundo 2026 — 960 figurinhas</div></div>
-            <span class="badge b-green">✅ Ativo</span>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-title">🔐 Segurança Admin</div>
-          <div class="cfg-row">
-            <div class="cfg-key">Usuário admin</div>
-            <input class="fi-inline" type="text" id="cfg-adm-user" style="width:160px">
+            <div><div class="cfg-key">Senha atual</div></div>
+            <input class="fi-sm" type="password" id="cfg-pass-old" placeholder="Senha atual">
           </div>
           <div class="cfg-row">
             <div><div class="cfg-key">Nova senha</div></div>
-            <input class="fi-inline" type="password" id="cfg-adm-pass" placeholder="Nova senha..." style="width:160px">
+            <input class="fi-sm" type="password" id="cfg-pass-new" placeholder="Nova senha">
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn-add" onclick="saveCfg()">💾 Salvar</button>
+            <span id="cfg-msg" style="margin-left:12px;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:600"></span>
           </div>
         </div>
 
-        <button class="btn-add" onclick="saveCfg()">💾 Salvar Configurações</button>
+        <div class="panel">
+          <div class="panel-title">🗑 Dados</div>
+          <div class="cfg-row">
+            <div>
+              <div class="cfg-key">Limpar todos os usuários</div>
+              <div class="cfg-hint">Remove todos os cadastros. Esta ação não pode ser desfeita.</div>
+            </div>
+            <button class="ab danger" onclick="openClear()">Limpar tudo</button>
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- MODAL BLOQUEAR/EXCLUIR -->
+<!-- MODAL -->
 <div class="overlay" id="modal">
   <div class="modal">
     <div class="mo-title" id="mo-title">Confirmar</div>
-    <div class="mo-sub" id="mo-sub">Tem certeza?</div>
+    <div class="mo-sub" id="mo-sub"></div>
     <div class="mo-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-danger" id="mo-btn" onclick="confirmModal()">Confirmar</button>
@@ -289,254 +370,348 @@ tr:hover td{background:rgba(255,255,255,.015)}
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════════════
-// AUTH ADMIN
-// ════════════════════════════════════════════════════════
-function getCfg(k,def){ try{return localStorage.getItem('wsa_'+k)||def;}catch(e){return def;} }
-function setCfg(k,v){ localStorage.setItem('wsa_'+k,v); }
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+function getCfg(k, def) {
+  return localStorage.getItem('wsa_' + k) || def;
+}
+function setCfg(k, v) {
+  localStorage.setItem('wsa_' + k, v);
+}
 
-function login(){
-  const u=document.getElementById('ai-user').value.trim();
-  const p=document.getElementById('ai-pass').value;
-  const au=getCfg('adm_user','admin');
-  const ap=getCfg('adm_pass','worldsticker2026');
-  if(u===au&&p===ap){
-    sessionStorage.setItem('wsa_auth',u);
-    document.getElementById('scr-login').style.display='none';
-    document.getElementById('scr-admin').style.display='block';
-    document.getElementById('tb-u').textContent=u;
-    init();
+function login() {
+  const u = document.getElementById('ai-user').value.trim();
+  const p = document.getElementById('ai-pass').value;
+  if (u === getCfg('user', 'admin') && p === getCfg('pass', 'worldsticker2026')) {
+    sessionStorage.setItem('wsa_auth', u);
+    boot();
   } else {
-    document.getElementById('l-err').textContent='Usuário ou senha incorretos.';
+    document.getElementById('l-err').textContent = 'Usuário ou senha incorretos.';
   }
 }
-function logout(){
+function logout() {
   sessionStorage.removeItem('wsa_auth');
-  document.getElementById('scr-admin').style.display='none';
-  document.getElementById('scr-login').style.display='flex';
-  document.getElementById('ai-pass').value='';
+  document.getElementById('scr-admin').style.display = 'none';
+  document.getElementById('scr-login').style.display = 'flex';
+  document.getElementById('ai-pass').value = '';
 }
 
-// ════════════════════════════════════════════════════════
-// USUÁRIOS — persistência em localStorage
-// A chave 'ws_users' é a MESMA lida pelo app.html
-// ════════════════════════════════════════════════════════
-function loadUsers(){ try{return JSON.parse(localStorage.getItem('ws_users')||'[]');}catch(e){return[];} }
-function saveUsers(u){ localStorage.setItem('ws_users',JSON.stringify(u)); }
-
-function genId(){ return 'u'+Date.now()+Math.random().toString(36).substr(2,4); }
-
-function fmtNasc(dateStr){
-  // input type=date retorna AAAA-MM-DD → converter para DD/MM/AAAA
-  if(!dateStr) return '';
-  const[y,m,d]=dateStr.split('-');
-  return`${d}/${m}/${y}`;
+// ─── USUÁRIOS (localStorage do admin) ───────────────────────────────────────
+function loadUsers() {
+  try { return JSON.parse(localStorage.getItem('wsa_users') || '[]'); } catch (e) { return []; }
+}
+function saveUsers(u) {
+  localStorage.setItem('wsa_users', JSON.stringify(u));
+}
+function genId() {
+  return 'u' + Date.now() + Math.random().toString(36).substr(2, 5);
+}
+function fmtNasc(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}/${m}/${y}`;
+}
+function nascToInput(nasc) {
+  // DD/MM/AAAA → AAAA-MM-DD para input type=date
+  if (!nasc) return '';
+  const [d, m, y] = nasc.split('/');
+  return `${y}-${m}-${d}`;
 }
 
-function addUser(){
-  const nome=document.getElementById('a-nome').value.trim();
-  const wpp=document.getElementById('a-wpp').value.trim().replace(/\D/g,'');
-  const nascRaw=document.getElementById('a-nasc').value;
-  const status=document.getElementById('a-status').value;
-  const errEl=document.getElementById('add-err');
-  errEl.textContent='';
+// ─── ADICIONAR ───────────────────────────────────────────────────────────────
+function addUser() {
+  const nome   = document.getElementById('a-nome').value.trim();
+  const wpp    = document.getElementById('a-wpp').value.trim().replace(/\D/g, '');
+  const nascRaw= document.getElementById('a-nasc').value;
+  const status = document.getElementById('a-status').value;
+  const errEl  = document.getElementById('add-err');
+  errEl.textContent = '';
 
-  if(!nome){ errEl.textContent='Digite o nome completo.'; return; }
-  if(!nascRaw){ errEl.textContent='Selecione a data de nascimento.'; return; }
+  if (!nome)    { errEl.textContent = '⚠️ Digite o nome completo.'; return; }
+  if (!nascRaw) { errEl.textContent = '⚠️ Selecione a data de nascimento.'; return; }
 
-  const nascimento=fmtNasc(nascRaw); // DD/MM/AAAA
-  const users=loadUsers();
+  const nascimento = fmtNasc(nascRaw);
+  const users = loadUsers();
 
-  // Checar duplicata
-  if(users.find(u=>u.nome.toLowerCase().trim()===nome.toLowerCase().trim()&&u.nascimento===nascimento)){
-    errEl.textContent='Este usuário (nome + nascimento) já está cadastrado.'; return;
+  if (users.find(u => u.nome.trim().toLowerCase() === nome.toLowerCase() && u.nascimento === nascimento)) {
+    errEl.textContent = '⚠️ Este usuário já está cadastrado com essa data.';
+    return;
   }
 
-  users.unshift({id:genId(),nome,wpp,nascimento,status,created:new Date().toISOString()});
+  users.unshift({ id: genId(), nome, wpp, nascimento, status, created: new Date().toISOString() });
   saveUsers(users);
-  document.getElementById('a-nome').value='';
-  document.getElementById('a-wpp').value='';
-  document.getElementById('a-nasc').value='';
-  renderTable(); renderDash();
-  toast('✅ '+nome+' adicionado com sucesso!');
+
+  document.getElementById('a-nome').value  = '';
+  document.getElementById('a-wpp').value   = '';
+  document.getElementById('a-nasc').value  = '';
+  renderTable();
+  renderDash();
+  updateExportPreview();
+  toast('✅ ' + nome + ' adicionado!');
 }
 
-function importCSV(){
-  const raw=document.getElementById('csv-input').value.trim();
-  if(!raw){ toast('⚠️ Cole os dados antes de importar'); return; }
-  const lines=raw.split('\n').filter(l=>l.trim());
-  const users=loadUsers();
-  let added=0,skip=0;
-  lines.forEach(line=>{
-    const parts=line.split(',').map(s=>s.trim());
-    const nome=parts[0]; const nascRaw=parts[1]; const wpp=(parts[2]||'').replace(/\D/g,'');
-    if(!nome||!nascRaw) { skip++; return; }
-    // nascRaw pode ser DD/MM/AAAA direto
-    let nasc=nascRaw;
-    if(nascRaw.includes('-')){ // AAAA-MM-DD
-      const[y,m,d]=nascRaw.split('-');nasc=`${d}/${m}/${y}`;
+// ─── IMPORTAR CSV ────────────────────────────────────────────────────────────
+function importCSV() {
+  const raw = document.getElementById('csv-input').value.trim();
+  if (!raw) { toast('⚠️ Cole os dados antes de importar'); return; }
+
+  const lines = raw.split('\n').filter(l => l.trim());
+  const users = loadUsers();
+  let added = 0, skip = 0;
+
+  lines.forEach(line => {
+    const parts = line.split(',').map(s => s.trim());
+    const nome  = parts[0];
+    const nascRaw = parts[1];
+    const wpp   = (parts[2] || '').replace(/\D/g, '');
+    if (!nome || !nascRaw) { skip++; return; }
+
+    let nasc = nascRaw;
+    // Se vier AAAA-MM-DD, converter
+    if (nascRaw.includes('-')) {
+      const [y, m, d] = nascRaw.split('-');
+      nasc = `${d}/${m}/${y}`;
     }
-    if(users.find(u=>u.nome.toLowerCase().trim()===nome.toLowerCase().trim()&&u.nascimento===nasc)){
-      skip++;return;
+    // Se vier DD/MM/AAAA, já está ok
+    if (users.find(u => u.nome.trim().toLowerCase() === nome.toLowerCase() && u.nascimento === nasc)) {
+      skip++; return;
     }
-    users.unshift({id:genId(),nome,wpp,nascimento:nasc,status:'ativo',created:new Date().toISOString()});
+    users.unshift({ id: genId(), nome, wpp, nascimento: nasc, status: 'ativo', created: new Date().toISOString() });
     added++;
   });
+
   saveUsers(users);
-  document.getElementById('csv-result').textContent=`${added} adicionados, ${skip} ignorados`;
-  document.getElementById('csv-input').value='';
-  renderTable(); renderDash();
+  document.getElementById('csv-input').value = '';
+  document.getElementById('csv-result').textContent = `${added} adicionado(s), ${skip} ignorado(s)`;
+  renderTable();
+  renderDash();
+  updateExportPreview();
   toast(`✅ ${added} usuário(s) importado(s)!`);
 }
 
-function renderTable(q=''){
-  const users=loadUsers();
-  const ql=q.toLowerCase();
-  const filtered=q?users.filter(u=>u.nome.toLowerCase().includes(ql)||(u.wpp||'').includes(ql)):users;
-  document.getElementById('user-count').textContent=`${filtered.length} usuário(s)`;
-  const tbody=document.getElementById('user-tbody');
-  if(!filtered.length){
-    tbody.innerHTML='<tr class="empty-row"><td colspan="6">Nenhum usuário encontrado. Adicione o primeiro acima.</td></tr>';
+// ─── TABELA ──────────────────────────────────────────────────────────────────
+function renderTable(q = '') {
+  const users = loadUsers();
+  const ql = q.toLowerCase();
+  const filtered = q ? users.filter(u => u.nome.toLowerCase().includes(ql) || (u.wpp || '').includes(ql)) : users;
+
+  document.getElementById('user-count').textContent = `${filtered.length} usuário(s)`;
+  const tbody = document.getElementById('user-tbody');
+
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;font-family:\'Barlow Condensed\',sans-serif;font-weight:600">Nenhum usuário. Adicione o primeiro acima.</td></tr>';
     return;
   }
-  tbody.innerHTML=filtered.map(u=>`<tr>
-    <td><strong>${u.nome}</strong></td>
-    <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px">${u.nascimento}</td>
-    <td>${u.wpp?`<a href="https://wa.me/55${u.wpp}" target="_blank" style="color:var(--blue)">${u.wpp}</a>`:'—'}</td>
-    <td>${u.status==='ativo'?'<span class="badge b-green">Ativo</span>':'<span class="badge b-red">Bloqueado</span>'}</td>
-    <td style="font-size:12px;color:var(--muted)">${fmtDate(u.created)}</td>
-    <td>
-      ${u.wpp?`<button class="ab ok" onclick="sendWpp('${u.id}')">📲 Enviar</button>`:''}
-      <button class="ab" onclick="toggleBlock('${u.id}')">${u.status==='ativo'?'🔒 Bloquear':'✅ Ativar'}</button>
-      <button class="ab danger" onclick="openDel('${u.id}')">🗑</button>
-    </td>
-  </tr>`).join('');
+
+  tbody.innerHTML = filtered.map(u => `
+    <tr>
+      <td><strong>${esc(u.nome)}</strong></td>
+      <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px;color:var(--gold)">${u.nascimento}</td>
+      <td>${u.wpp ? `<a href="https://wa.me/55${u.wpp}" target="_blank" style="color:var(--blue)">${u.wpp}</a>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td>${u.status === 'ativo'
+        ? '<span class="badge b-green">Ativo</span>'
+        : '<span class="badge b-red">Bloqueado</span>'}</td>
+      <td style="font-size:12px;color:var(--muted)">${fmtDate(u.created)}</td>
+      <td>
+        ${u.wpp ? `<button class="ab ok" onclick="sendWpp('${u.id}')">📲</button>` : ''}
+        <button class="ab" onclick="toggleBlock('${u.id}')">${u.status === 'ativo' ? '🔒' : '✅'}</button>
+        <button class="ab danger" onclick="openDel('${u.id}')">🗑</button>
+      </td>
+    </tr>`).join('');
 }
 
-function toggleBlock(id){
-  const users=loadUsers();
-  const u=users.find(x=>x.id===id);
-  if(!u) return;
-  u.status=u.status==='ativo'?'bloqueado':'ativo';
-  saveUsers(users); renderTable(); renderDash();
-  toast(u.status==='ativo'?`✅ ${u.nome} ativado`:`🔒 ${u.nome} bloqueado`);
+function toggleBlock(id) {
+  const users = loadUsers();
+  const u = users.find(x => x.id === id);
+  if (!u) return;
+  u.status = u.status === 'ativo' ? 'bloqueado' : 'ativo';
+  saveUsers(users);
+  renderTable();
+  renderDash();
+  updateExportPreview();
+  toast(u.status === 'ativo' ? `✅ ${u.nome} ativado` : `🔒 ${u.nome} bloqueado`);
 }
 
-function sendWpp(id){
-  const u=loadUsers().find(x=>x.id===id);
-  if(!u||!u.wpp) return;
-  const appUrl=getCfg('app_url','https://worldsticker.app');
-  const msg=`⚽ *WorldSticker — Copa do Mundo 2026*\n\nOlá *${u.nome}*! Seu acesso está pronto 🎉\n\n🔗 Acesse: ${appUrl}\n🔑 Login:\n• Nome: *${u.nome}*\n• Nascimento: *${u.nascimento}*\n\n📲 Entre no app e comece a marcar suas figurinhas!\n_Dúvidas? Responda esta mensagem._`;
-  window.open('https://wa.me/55'+u.wpp+'?text='+encodeURIComponent(msg),'_blank');
+function sendWpp(id) {
+  const u = loadUsers().find(x => x.id === id);
+  if (!u || !u.wpp) return;
+  const appUrl = getCfg('app_url', 'https://worldsticker.app/app.html');
+  const msg = `⚽ *WorldSticker — Copa do Mundo 2026*\n\nOlá *${u.nome}*! Seu acesso está pronto 🎉\n\n🔗 *Link do App:* ${appUrl}\n\n🔑 *Para entrar use:*\n• Nome: *${u.nome}*\n• Data de nascimento: *${u.nascimento}*\n\n📲 Abra o link, digite seu nome e sua data de nascimento para acessar seu álbum!\n\n_Dúvidas? Responda esta mensagem._`;
+  window.open('https://wa.me/55' + u.wpp + '?text=' + encodeURIComponent(msg), '_blank');
 }
 
-// Modal excluir
-let delTarget='';
-function openDel(id){
-  const u=loadUsers().find(x=>x.id===id);
-  delTarget=id;
-  document.getElementById('mo-title').textContent='Excluir usuário';
-  document.getElementById('mo-sub').textContent=`Tem certeza que quer excluir "${u?.nome}"? Esta ação não pode ser desfeita e os dados do álbum serão perdidos.`;
+function sendWppBulk() {
+  const users = loadUsers().filter(u => u.status === 'ativo' && u.wpp);
+  if (!users.length) { toast('⚠️ Nenhum usuário ativo com WhatsApp cadastrado'); return; }
+  const appUrl = getCfg('app_url', 'https://worldsticker.app/app.html');
+  const msg = `⚽ *WorldSticker — Copa do Mundo 2026*\n\nSeu álbum de figurinhas digital está pronto! 🎉\n\n🔗 *Acesse:* ${appUrl}\n🔑 *Login:* use seu nome completo + data de nascimento\n\n📲 Funciona direto no celular!`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  toast(`📲 Mensagem pronta — envie para ${users.length} contato(s)`);
+}
+
+// ─── MODAL DELETE ────────────────────────────────────────────────────────────
+let modalAction = null;
+function openDel(id) {
+  const u = loadUsers().find(x => x.id === id);
+  document.getElementById('mo-title').textContent = 'Excluir usuário';
+  document.getElementById('mo-sub').textContent = `Tem certeza que deseja excluir "${u?.nome}"? Esta ação não pode ser desfeita.`;
+  document.getElementById('mo-btn').textContent = 'Excluir';
+  modalAction = () => {
+    const users = loadUsers().filter(x => x.id !== id);
+    saveUsers(users);
+    renderTable();
+    renderDash();
+    updateExportPreview();
+    toast('🗑 Usuário excluído');
+  };
   document.getElementById('modal').classList.add('on');
 }
-function confirmModal(){
-  const users=loadUsers().filter(x=>x.id!==delTarget);
-  localStorage.removeItem('ws_album_'+delTarget);
-  saveUsers(users); renderTable(); renderDash();
-  closeModal(); toast('🗑 Usuário excluído');
+function openClear() {
+  document.getElementById('mo-title').textContent = 'Limpar todos os usuários';
+  document.getElementById('mo-sub').textContent = 'Isso vai apagar TODOS os usuários cadastrados. Não pode ser desfeito.';
+  document.getElementById('mo-btn').textContent = 'Limpar tudo';
+  modalAction = () => {
+    saveUsers([]);
+    renderTable();
+    renderDash();
+    updateExportPreview();
+    toast('🗑 Todos os usuários removidos');
+  };
+  document.getElementById('modal').classList.add('on');
 }
-function closeModal(){ document.getElementById('modal').classList.remove('on'); }
-
-// ════════════════════════════════════════════════════════
-// DASHBOARD
-// ════════════════════════════════════════════════════════
-function renderDash(){
-  const users=loadUsers();
-  const today=new Date().toDateString();
-  const total=users.length;
-  const ativo=users.filter(u=>u.status==='ativo').length;
-  const bloq=users.filter(u=>u.status==='bloqueado').length;
-  const hoje=users.filter(u=>new Date(u.created).toDateString()===today).length;
-  document.getElementById('s-total').textContent=total;
-  document.getElementById('s-ativo').textContent=ativo;
-  document.getElementById('s-bloq').textContent=bloq;
-  document.getElementById('s-hoje').textContent=hoje;
-
-  const tbody=document.getElementById('rec-tbody');
-  const rec=[...users].slice(0,8);
-  if(!rec.length){ tbody.innerHTML='<tr class="empty-row"><td colspan="4">Nenhum usuário cadastrado ainda.</td></tr>'; return; }
-  tbody.innerHTML=rec.map(u=>`<tr>
-    <td><strong>${u.nome}</strong></td>
-    <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px">${u.nascimento}</td>
-    <td>${u.status==='ativo'?'<span class="badge b-green">Ativo</span>':'<span class="badge b-red">Bloqueado</span>'}</td>
-    <td style="font-size:12px;color:var(--muted)">${fmtDate(u.created)}</td>
-  </tr>`).join('');
+function confirmModal() {
+  if (modalAction) modalAction();
+  closeModal();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('on');
+  modalAction = null;
 }
 
-// ════════════════════════════════════════════════════════
-// CONFIGS
-// ════════════════════════════════════════════════════════
-function saveCfg(){
-  const nome=document.getElementById('cfg-nome').value.trim();
-  const wpp=document.getElementById('cfg-wpp').value.trim();
-  const u=document.getElementById('cfg-adm-user').value.trim();
-  const p=document.getElementById('cfg-adm-pass').value;
-  if(nome) setCfg('nome',nome);
-  if(wpp) setCfg('wpp',wpp);
-  if(u) setCfg('adm_user',u);
-  if(p) setCfg('adm_pass',p);
-  toast('✅ Configurações salvas!');
-}
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+function renderDash() {
+  const users = loadUsers();
+  const today = new Date().toDateString();
+  document.getElementById('s-total').textContent = users.length;
+  document.getElementById('s-ativo').textContent = users.filter(u => u.status === 'ativo').length;
+  document.getElementById('s-bloq').textContent  = users.filter(u => u.status === 'bloqueado').length;
+  document.getElementById('s-hoje').textContent  = users.filter(u => new Date(u.created).toDateString() === today).length;
 
-// ════════════════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════════════════
-function goPage(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
-  document.getElementById('pg-'+id).classList.add('on');
-  if(el) el.classList.add('on');
-  if(id==='usuarios') renderTable();
-  if(id==='dashboard') renderDash();
-  if(id==='configs'){
-    document.getElementById('cfg-adm-user').value=getCfg('adm_user','admin');
+  const tbody = document.getElementById('rec-tbody');
+  const rec = [...users].slice(0, 8);
+  if (!rec.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;font-family:\'Barlow Condensed\',sans-serif;font-weight:600">Nenhum usuário cadastrado ainda.</td></tr>';
+    return;
   }
+  tbody.innerHTML = rec.map(u => `
+    <tr>
+      <td><strong>${esc(u.nome)}</strong></td>
+      <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gold)">${u.nascimento}</td>
+      <td>${u.wpp || '<span style="color:var(--muted)">—</span>'}</td>
+      <td>${u.status === 'ativo' ? '<span class="badge b-green">Ativo</span>' : '<span class="badge b-red">Bloqueado</span>'}</td>
+      <td style="font-size:12px;color:var(--muted)">${fmtDate(u.created)}</td>
+    </tr>`).join('');
 }
-function fmtDate(iso){
-  if(!iso) return '—';
-  const d=new Date(iso);
-  return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+// ─── EXPORT ──────────────────────────────────────────────────────────────────
+function buildExportData() {
+  const users = loadUsers();
+  // Exporta apenas campos necessários para o app — sem dados sensíveis de admin
+  return users.map(u => ({
+    id:         u.id,
+    nome:       u.nome,
+    nascimento: u.nascimento,  // DD/MM/AAAA
+    status:     u.status
+  }));
+}
+
+function updateExportPreview() {
+  const data = buildExportData();
+  const users = loadUsers();
+  const ativos  = users.filter(u => u.status === 'ativo').length;
+  const bloq    = users.filter(u => u.status === 'bloqueado').length;
+  document.getElementById('export-summary').innerHTML =
+    `<strong style="color:var(--text)">${data.length}</strong> usuários no arquivo &nbsp;·&nbsp; ` +
+    `<span style="color:var(--green)">${ativos} ativos</span> &nbsp;·&nbsp; ` +
+    `<span style="color:var(--red)">${bloq} bloqueados</span><br>` +
+    `Gerado em: <strong style="color:var(--text)">${new Date().toLocaleString('pt-BR')}</strong>`;
+
+  const preview = JSON.stringify(data.slice(0, 5), null, 2) +
+    (data.length > 5 ? `\n... e mais ${data.length - 5} usuário(s)` : '');
+  document.getElementById('json-preview').textContent = preview;
+}
+
+function downloadJSON() {
+  const data = buildExportData();
+  if (!data.length) { toast('⚠️ Nenhum usuário para exportar'); return; }
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'usuarios.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`✅ usuarios.json baixado — ${data.length} usuário(s)`);
+}
+
+function copyJSON() {
+  const data = buildExportData();
+  if (!data.length) { toast('⚠️ Nenhum usuário para copiar'); return; }
+  navigator.clipboard?.writeText(JSON.stringify(data, null, 2))
+    .then(() => toast('📋 JSON copiado para a área de transferência!'))
+    .catch(() => toast('⚠️ Não foi possível copiar automaticamente'));
+}
+
+// ─── CONFIGS ─────────────────────────────────────────────────────────────────
+function saveCfg() {
+  const u   = document.getElementById('cfg-user').value.trim();
+  const old = document.getElementById('cfg-pass-old').value;
+  const nw  = document.getElementById('cfg-pass-new').value;
+  const msg = document.getElementById('cfg-msg');
+
+  if (old && old !== getCfg('pass', 'worldsticker2026')) {
+    msg.style.color = 'var(--red)'; msg.textContent = '❌ Senha atual incorreta.'; return;
+  }
+  if (u) setCfg('user', u);
+  if (nw) setCfg('pass', nw);
+  msg.style.color = 'var(--green)'; msg.textContent = '✅ Salvo!';
+  document.getElementById('cfg-pass-old').value = '';
+  document.getElementById('cfg-pass-new').value = '';
+  setTimeout(() => msg.textContent = '', 2500);
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function goPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  if (el) el.classList.add('on');
+  if (id === 'usuarios')  renderTable();
+  if (id === 'dashboard') renderDash();
+  if (id === 'exportar')  updateExportPreview();
+  if (id === 'configs')   document.getElementById('cfg-user').value = getCfg('user', 'admin');
 }
 let toastT;
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('on');
-  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),2500);
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2500);
 }
 
-// ════════════════════════════════════════════════════════
-// BOOT
-// ════════════════════════════════════════════════════════
-function init(){
-  // Seed demo se vazio
-  const users=loadUsers();
-  if(!users.length){
-    const seed=[
-      {id:'u_demo1',nome:'Carlos Eduardo',wpp:'83999999999',nascimento:'15/03/1990',status:'ativo',created:new Date(Date.now()-86400000).toISOString()},
-      {id:'u_demo2',nome:'João Silva',wpp:'83988888888',nascimento:'22/07/2005',status:'ativo',created:new Date(Date.now()-3600000*2).toISOString()},
-      {id:'u_demo3',nome:'Maria Santos',wpp:'',nascimento:'08/12/1998',status:'bloqueado',created:new Date().toISOString()},
-    ];
-    saveUsers(seed);
-  }
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+function boot() {
+  document.getElementById('scr-login').style.display  = 'none';
+  document.getElementById('scr-admin').style.display  = 'block';
+  document.getElementById('tb-u').textContent = sessionStorage.getItem('wsa_auth');
   renderDash();
 }
 
-if(sessionStorage.getItem('wsa_auth')){
-  document.getElementById('scr-login').style.display='none';
-  document.getElementById('scr-admin').style.display='block';
-  document.getElementById('tb-u').textContent=sessionStorage.getItem('wsa_auth');
-  init();
-}
+if (sessionStorage.getItem('wsa_auth')) boot();
 </script>
 </body>
 </html>
