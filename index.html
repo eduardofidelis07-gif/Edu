@@ -188,6 +188,15 @@ main::-webkit-scrollbar{display:none}
     <button class="lc-btn" onclick="doLogin()">Entrar no Álbum →</button>
     <div class="lc-err" id="login-err"></div>
     <div class="lc-hint">Não tem acesso ainda?<br><strong style="color:var(--gold)">Fale com o administrador.</strong></div>
+
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px;margin-bottom:8px">ADMINISTRADOR — CARREGAR USUÁRIOS</div>
+      <div id="import-status" style="font-size:12px;color:var(--muted);margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600"></div>
+      <label style="display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px dashed rgba(245,197,24,.3);border-radius:var(--rs);padding:12px;cursor:pointer;font-size:13px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3px;justify-content:center">
+        📂 Carregar usuarios.json
+        <input type="file" accept=".json" id="file-import" style="display:none" onchange="importUsers(this)">
+      </label>
+    </div>
   </div>
 </div>
 
@@ -291,18 +300,14 @@ const TOTAL=12*4*20;
 const SUPPORT_WPP='5583999999999';
 
 // ════════════════════════════════════════════════════════
-// BASE DE USUÁRIOS — editável pelo admin
-// Em produção: carregar de API/Supabase
-// Formato: { chave: { nome, nascimento:"DD/MM/AAAA", status } }
-// A chave é nome normalizado + nascimento, gerada pelo admin
+// BASE DE USUÁRIOS — carregada do usuarios.json exportado
+// pelo Admin via botão "Carregar lista de usuários"
 // ════════════════════════════════════════════════════════
 function loadUsers(){
-  // Usuários cadastrados pelo admin ficam no localStorage com chave 'ws_users'
-  // O admin.html escreve neste mesmo key
-  try{
-    const u=JSON.parse(localStorage.getItem('ws_users')||'[]');
-    return u; // array de {id, nome, nascimento:"DD/MM/AAAA", status, wpp}
-  }catch(e){return[];}
+  try{ return JSON.parse(localStorage.getItem('app_users')||'[]'); }catch(e){ return []; }
+}
+function saveAppUsers(arr){
+  localStorage.setItem('app_users', JSON.stringify(arr));
 }
 
 // ════════════════════════════════════════════════════════
@@ -537,6 +542,32 @@ function showToast(msg){
 }
 
 // ════════════════════════════════════════════════════════
+// IMPORTAR usuarios.json gerado pelo Admin
+// ════════════════════════════════════════════════════════
+function importUsers(input){
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!Array.isArray(data)) throw new Error('Formato inválido');
+      saveAppUsers(data);
+      const el=document.getElementById('import-status');
+      el.style.color='var(--green)';
+      el.textContent='✅ '+data.length+' usuário(s) carregado(s) com sucesso!';
+      setTimeout(()=>{ el.style.color='var(--muted)'; el.textContent=data.length+' usuário(s) no sistema'; },3000);
+    }catch(err){
+      const el=document.getElementById('import-status');
+      el.style.color='var(--red)';
+      el.textContent='❌ Arquivo inválido. Use o usuarios.json do Admin.';
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ════════════════════════════════════════════════════════
 // PREENCHER SELECTS DE DIA E ANO
 // ════════════════════════════════════════════════════════
 (function fillDateSelects(){
@@ -557,11 +588,18 @@ function showToast(msg){
 // BOOT — verificar sessão existente
 // ════════════════════════════════════════════════════════
 (function boot(){
+  // Mostrar quantos usuários já carregados
+  const users=loadUsers();
+  const importEl=document.getElementById('import-status');
+  if(users.length>0){
+    importEl.style.color='var(--muted)';
+    importEl.textContent=users.length+' usuário(s) no sistema';
+  }
+
   const sess=sessionStorage.getItem('ws_session');
   if(sess){
     try{
       const{id,nome,nascimento}=JSON.parse(sess);
-      const users=loadUsers();
       const u=users.find(x=>x.id===id);
       if(u&&u.status!=='bloqueado'){
         currentUser=u;startApp();return;
