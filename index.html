@@ -21,18 +21,13 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Barlow',sans-serif;color:var(--text)}
 #app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto}
-
-/* ══ SCREENS ══ */
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden;animation:fi .2s ease}
 .scr.on{display:flex}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ══ LOGIN ══ */
-#scr-login{
-  background:radial-gradient(ellipse at 50% -10%,rgba(245,197,24,.12),transparent 60%),var(--bg);
-  align-items:center;justify-content:center;padding:24px;text-align:center;overflow-y:auto
-}
-.ball{font-size:52px;margin-bottom:12px;display:block;animation:bonce 2s ease-in-out infinite}
+/* LOGIN */
+#scr-login{background:radial-gradient(ellipse at 50% -10%,rgba(245,197,24,.12),transparent 60%),var(--bg);align-items:center;justify-content:center;padding:24px;text-align:center;overflow-y:auto}
+.ball{font-size:52px;margin-bottom:12px;display:block;animation:bonce 2s ease-in-out infinite;cursor:pointer;user-select:none}
 @keyframes bonce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .l-logo{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;color:var(--gold);line-height:1}
 .l-sub{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:28px;margin-top:3px}
@@ -50,65 +45,58 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Barlow',
 .l-btn:active{opacity:.86;transform:scale(.98)}
 .l-err{color:var(--red);font-size:12px;text-align:center;margin-top:9px;min-height:15px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
 .l-foot{margin-top:14px;text-align:center;font-size:12px;color:var(--muted);line-height:1.5}
-
-/* botão admin oculto — aparece só ao clicar 5x no ⚽ */
-.adm-trigger{cursor:pointer;user-select:none}
 #adm-link{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);text-align:center;display:none}
-#adm-link button{background:transparent;border:1px solid rgba(245,197,24,.25);border-radius:var(--rs);padding:10px 18px;color:rgba(245,197,24,.6);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;cursor:pointer;width:100%;transition:all .2s}
-#adm-link button:hover{border-color:var(--gold);color:var(--gold)}
+#adm-link button{background:transparent;border:1px solid rgba(245,197,24,.25);border-radius:var(--rs);padding:10px 18px;color:rgba(245,197,24,.7);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;cursor:pointer;width:100%}
 
-/* ══ BLOCKED ══ */
+/* BLOCKED */
 #scr-blocked{align-items:center;justify-content:center;padding:32px;text-align:center}
 .blk-icon{font-size:60px;margin-bottom:18px}
 .blk-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);margin-bottom:8px}
 .blk-msg{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;max-width:290px}
-.blk-btn{background:#25d366;color:#fff;border:none;border-radius:99px;padding:13px 26px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.blk-btn{background:#25d366;color:#fff;border:none;border-radius:99px;padding:13px 26px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
 
-/* ══ PAINEL ADMIN (dentro do app) ══ */
-#scr-admin{background:var(--dark);overflow-y:auto}
-.adm-top{background:var(--dark2);border-bottom:1px solid rgba(255,255,255,.1);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:10}
+/* ADMIN */
+#scr-admin{background:var(--dark);overflow:hidden}
+.adm-top{background:var(--dark2);border-bottom:1px solid rgba(255,255,255,.1);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .adm-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold)}
-.adm-body{padding:16px;flex:1;overflow-y:auto}
-.adm-body::-webkit-scrollbar{display:none}
+.adm-scroll{flex:1;overflow-y:auto;padding:16px}
+.adm-scroll::-webkit-scrollbar{display:none}
 .adm-section{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:18px;margin-bottom:14px}
-.adm-sec-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.3px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06);color:var(--text)}
+.adm-sec-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.3px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06)}
 .adm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .adm-stat{background:var(--dark2);border-radius:9px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.07)}
 .adm-sv{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1}
-.adm-sl{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;margin-top:1px}
+.adm-sl{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;margin-top:1px}
 .adm-inp{width:100%;background:var(--dark2);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:9px;-webkit-appearance:none;appearance:none}
 .adm-inp:focus{border-color:rgba(245,197,24,.4)}
-.adm-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.adm-btn{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:7px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;transition:opacity .15s}
-.adm-btn:active{opacity:.85}
-.adm-btn.secondary{background:var(--dark2);color:var(--muted);border:1px solid rgba(255,255,255,.1)}
+.adm-btn{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:7px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px}
+.adm-btn.sec{background:var(--dark2);color:var(--muted);border:1px solid rgba(255,255,255,.1)}
 .adm-btn.danger{background:rgba(255,61,61,.15);color:var(--red);border:1px solid rgba(255,61,61,.25)}
 .adm-err{color:var(--red);font-size:12px;margin-top:6px;min-height:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+.adm-ok{color:var(--green);font-size:12px;margin-top:6px;min-height:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+/* AVISO IMPORTANTE */
+.adm-alert{background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.3);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:var(--gold);line-height:1.6}
+.adm-alert strong{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px}
 /* user list */
 .u-item{background:var(--dark2);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .u-info{flex:1;min-width:0}
 .u-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.u-nasc{font-size:12px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px}
+.u-nasc{font-size:12px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:600}
 .u-actions{display:flex;gap:5px;flex-shrink:0}
-.u-btn{background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 8px;font-size:12px;cursor:pointer;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;transition:all .15s;white-space:nowrap}
-.u-btn.block{border-color:rgba(255,61,61,.3);color:var(--red)}
-.u-btn.unblock{border-color:rgba(0,200,83,.3);color:var(--green)}
-.u-btn.del{border-color:rgba(255,61,61,.2);color:rgba(255,61,61,.6)}
+.u-btn{background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.u-btn.blk{border-color:rgba(255,61,61,.3);color:var(--red)}
+.u-btn.act{border-color:rgba(0,200,83,.3);color:var(--green)}
 .badge-on{display:inline-block;background:rgba(0,200,83,.15);color:var(--green);border-radius:99px;padding:2px 8px;font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
 .badge-off{display:inline-block;background:rgba(255,61,61,.15);color:var(--red);border-radius:99px;padding:2px 8px;font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
 .adm-search{width:100%;background:var(--dark2);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:12px;-webkit-appearance:none;appearance:none}
-.adm-search:focus{border-color:rgba(245,197,24,.3)}
 .adm-empty{text-align:center;padding:24px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px}
-/* csv */
 .csv-area{width:100%;background:var(--dark2);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:11px 12px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical;min-height:80px;outline:none;-webkit-appearance:none;appearance:none;margin-bottom:9px}
-.csv-area:focus{border-color:rgba(245,197,24,.3)}
-/* login admin */
 #adm-login-box{padding:32px 24px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.adm-login-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);margin-bottom:4px}
-.adm-login-sub{font-size:12px;color:var(--muted);margin-bottom:24px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1px}
 .adm-login-card{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:22px;width:100%;max-width:300px}
+/* EXPORT btn */
+.export-btn{width:100%;background:var(--bg3);border:1px dashed rgba(245,197,24,.4);border-radius:7px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer;color:var(--gold);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
 
-/* ══ APP ══ */
+/* APP */
 #scr-app{background:var(--bg)}
 header{background:var(--bg2);padding:12px 16px 0;flex-shrink:0;border-bottom:1px solid var(--border)}
 .htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -184,19 +172,16 @@ main::-webkit-scrollbar{display:none}
 <body>
 <div id="app">
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div class="scr" id="scr-login">
-  <span class="ball adm-trigger" onclick="secretTap()" title="">⚽</span>
+  <span class="ball" onclick="secretTap()">⚽</span>
   <div class="l-logo">WorldSticker</div>
   <div class="l-sub">Copa do Mundo 2026</div>
-
   <div class="l-card">
     <div class="l-title">Entrar no seu álbum</div>
     <div class="l-hint-txt">Digite o nome e a data de nascimento cadastrados pelo administrador.</div>
-
     <label class="lbl">Seu nome</label>
-    <input class="inp" type="text" id="inp-name" placeholder="Ex: João Silva" autocomplete="name" autocorrect="off">
-
+    <input class="inp" type="text" id="inp-name" placeholder="Ex: João Silva" autocomplete="name" autocorrect="off" autocapitalize="words">
     <label class="lbl">Data de nascimento</label>
     <div class="drow">
       <select class="dsel" id="inp-day"><option value="">Dia</option></select>
@@ -209,30 +194,24 @@ main::-webkit-scrollbar{display:none}
       </select>
       <select class="dsel" id="inp-year"><option value="">Ano</option></select>
     </div>
-
     <button class="l-btn" onclick="doLogin()">Entrar no Álbum →</button>
     <div class="l-err" id="login-err"></div>
     <div class="l-foot">Não tem acesso? Fale com o <strong style="color:var(--gold)">administrador</strong>.</div>
-
-    <!-- Botão admin oculto — aparece após 5 toques no ⚽ -->
     <div id="adm-link">
-      <button onclick="showAdminLogin()">⚙️ Área do Administrador</button>
+      <button onclick="showScreen('scr-admin')">⚙️ Área do Administrador</button>
     </div>
   </div>
 </div>
 
-<!-- ══ BLOCKED ══ -->
+<!-- BLOCKED -->
 <div class="scr" id="scr-blocked">
   <div class="blk-icon">🚫</div>
   <div class="blk-title">Acesso Bloqueado</div>
-  <p class="blk-msg">Seu acesso foi bloqueado pelo administrador.<br>Entre em contato para mais informações.</p>
-  <button class="blk-btn" onclick="contactSupport()">
-    <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    Falar com Suporte
-  </button>
+  <p class="blk-msg">Seu acesso foi bloqueado.<br>Entre em contato com o administrador.</p>
+  <button class="blk-btn" onclick="contactSupport()">Falar com Suporte</button>
 </div>
 
-<!-- ══ PAINEL ADMIN ══ -->
+<!-- ADMIN -->
 <div class="scr" id="scr-admin">
   <div class="adm-top">
     <div class="adm-logo">⚙️ Admin — WorldSticker</div>
@@ -242,10 +221,10 @@ main::-webkit-scrollbar{display:none}
     </div>
   </div>
 
-  <!-- Login do admin -->
-  <div id="adm-login-box">
-    <div class="adm-login-title">🔐 Admin</div>
-    <div class="adm-login-sub">Senha do administrador</div>
+  <!-- Login admin -->
+  <div id="adm-login-box" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);margin-bottom:4px">🔐 Admin</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:24px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1px">Senha do administrador</div>
     <div class="adm-login-card">
       <input class="adm-inp" type="password" id="adm-pass-inp" placeholder="Digite a senha admin" autocomplete="current-password" onkeydown="if(event.key==='Enter')admLogin()">
       <button class="adm-btn" onclick="admLogin()">Entrar →</button>
@@ -254,9 +233,15 @@ main::-webkit-scrollbar{display:none}
     </div>
   </div>
 
-  <!-- Painel do admin (visível após login) -->
+  <!-- Painel admin -->
   <div id="adm-panel" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-    <div class="adm-body">
+    <div class="adm-scroll">
+
+      <!-- ⚠️ AVISO PRINCIPAL -->
+      <div class="adm-alert">
+        <strong>⚠️ Como funciona o cadastro</strong>
+        Cadastre os usuários aqui, depois clique em <strong>"📥 Baixar arquivo atualizado"</strong>. Envie o novo arquivo HTML para os usuários. Os dados ficam salvos dentro do próprio arquivo.
+      </div>
 
       <!-- Stats -->
       <div class="adm-stats">
@@ -265,20 +250,21 @@ main::-webkit-scrollbar{display:none}
         <div class="adm-stat"><div class="adm-sv" style="color:var(--red)" id="as-bloq">0</div><div class="adm-sl">Bloqueados</div></div>
       </div>
 
-      <!-- Cadastrar usuário -->
+      <!-- Cadastrar -->
       <div class="adm-section">
         <div class="adm-sec-title">➕ Cadastrar Novo Usuário</div>
         <label class="lbl" style="color:var(--muted)">Nome completo *</label>
-        <input class="adm-inp" type="text" id="a-nome" placeholder="Ex: João Silva" autocomplete="off">
+        <input class="adm-inp" type="text" id="a-nome" placeholder="Ex: João Silva" autocorrect="off" autocapitalize="words">
         <label class="lbl" style="color:var(--muted)">Data de nascimento *</label>
         <input class="adm-inp" type="date" id="a-nasc">
         <label class="lbl" style="color:var(--muted)">WhatsApp (opcional)</label>
         <input class="adm-inp" type="tel" id="a-wpp" placeholder="83999999999">
         <button class="adm-btn" onclick="admAddUser()">+ Cadastrar</button>
         <div class="adm-err" id="a-err"></div>
+        <div class="adm-ok" id="a-ok"></div>
       </div>
 
-      <!-- Cadastro em lote -->
+      <!-- Importar lote -->
       <div class="adm-section">
         <div class="adm-sec-title">📋 Cadastro em Lote</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">
@@ -286,21 +272,31 @@ main::-webkit-scrollbar{display:none}
         </div>
         <textarea class="csv-area" id="csv-inp" placeholder="João Silva, 15/06/2003, 83999999999&#10;Maria Santos, 22/11/1998&#10;Pedro Lima, 01/03/2005"></textarea>
         <button class="adm-btn" onclick="admImportCSV()">📥 Importar Lista</button>
-        <div class="adm-err" id="csv-res" style="color:var(--green)"></div>
+        <div class="adm-ok" id="csv-res"></div>
       </div>
 
-      <!-- Lista de usuários -->
+      <!-- Lista -->
       <div class="adm-section">
         <div class="adm-sec-title">👥 Usuários Cadastrados</div>
         <input class="adm-search" type="search" id="adm-search" placeholder="Buscar nome..." oninput="renderAdmList(this.value)">
         <div id="adm-user-list"></div>
       </div>
 
-      <!-- Ações -->
+      <!-- EXPORTAR — seção mais importante -->
+      <div class="adm-section" style="border-color:rgba(245,197,24,.3)">
+        <div class="adm-sec-title" style="color:var(--gold)">📤 Gerar Arquivo com Usuários</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">
+          Após cadastrar todos os usuários, baixe o arquivo atualizado e envie o link para eles. Os dados de login ficam gravados dentro do arquivo HTML.
+        </div>
+        <button class="export-btn" onclick="downloadUpdatedFile()">📥 Baixar arquivo atualizado</button>
+        <div class="adm-ok" id="export-ok" style="text-align:center;margin-top:8px"></div>
+      </div>
+
+      <!-- Ações extras -->
       <div class="adm-section">
-        <div class="adm-sec-title">⚙️ Ações</div>
+        <div class="adm-sec-title">⚙️ Outras Ações</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="adm-btn secondary" onclick="admChangePass()">🔑 Alterar senha admin</button>
+          <button class="adm-btn sec" onclick="admChangePass()">🔑 Alterar senha admin</button>
           <button class="adm-btn danger" onclick="admClearAll()">🗑 Apagar todos os usuários</button>
         </div>
       </div>
@@ -309,14 +305,11 @@ main::-webkit-scrollbar{display:none}
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div class="scr" id="scr-app">
   <header>
     <div class="htop">
-      <div class="logo">
-        ⚽ WorldSticker
-        <div class="logo-sub" id="u-name">Copa 2026</div>
-      </div>
+      <div class="logo">⚽ WorldSticker<div class="logo-sub" id="u-name">Copa 2026</div></div>
       <div class="hbtns">
         <button class="hbtn" onclick="doLogout()">Sair</button>
         <button class="wbtn" onclick="shareWpp()">
@@ -370,7 +363,7 @@ main::-webkit-scrollbar{display:none}
 
 <script>
 // ══════════════════════════════════════════
-// DADOS DOS GRUPOS
+// GRUPOS
 // ══════════════════════════════════════════
 const GRUPOS={
   A:[{n:"México",f:"🇲🇽"},{n:"África do Sul",f:"🇿🇦"},{n:"Coreia do Sul",f:"🇰🇷"},{n:"Rep. Tcheca",f:"🇨🇿"}],
@@ -390,38 +383,42 @@ const GC={A:"#00b894",B:"#0984e3",C:"#fdcb6e",D:"#6c5ce7",E:"#e17055",F:"#00cec9
 const TOTAL=12*4*20;
 
 // ══════════════════════════════════════════
-// USUÁRIOS — localStorage único arquivo
+// USUÁRIOS — ficam gravados DENTRO DO ARQUIVO
+// Editados via painel admin e regravados no download
 // ══════════════════════════════════════════
-function loadUsers(){try{return JSON.parse(localStorage.getItem('ws_users')||'[]');}catch(e){return[];}}
-function saveUsers(u){localStorage.setItem('ws_users',JSON.stringify(u));}
+var USUARIOS_EMBED = []; // <<< LISTA EMBUTIDA — preenchida pelo admin e regravada no download
+
+// Carrega: prioridade localStorage (sessão do admin) > embed
+function loadUsers(){
+  try{
+    const ls=JSON.parse(localStorage.getItem('ws_users')||'null');
+    if(ls && Array.isArray(ls)) return ls;
+  }catch(e){}
+  return JSON.parse(JSON.stringify(USUARIOS_EMBED));
+}
+function saveUsers(u){
+  localStorage.setItem('ws_users',JSON.stringify(u));
+}
 function genId(){return 'u'+Date.now()+Math.random().toString(36).substr(2,4);}
 
 // ══════════════════════════════════════════
-// SECRET TAP — 5 toques no ⚽ revela botão admin
+// SECRET TAP — 5x no ⚽
 // ══════════════════════════════════════════
 let tapCount=0,tapTimer;
 function secretTap(){
-  tapCount++;
-  clearTimeout(tapTimer);
+  tapCount++;clearTimeout(tapTimer);
   tapTimer=setTimeout(()=>tapCount=0,1500);
   if(tapCount>=5){
     tapCount=0;
     document.getElementById('adm-link').style.display='block';
-    showToast('⚙️ Área admin desbloqueada');
+    showToast('⚙️ Admin desbloqueado');
   }
-}
-
-function showAdminLogin(){
-  showScreen('scr-admin');
-  document.getElementById('adm-pass-inp').focus();
 }
 
 // ══════════════════════════════════════════
 // AUTH ADMIN
 // ══════════════════════════════════════════
 function getAdmPass(){return localStorage.getItem('ws_adm_pass')||'admin2026';}
-function setAdmPass(p){localStorage.setItem('ws_adm_pass',p);}
-
 function admLogin(){
   const p=document.getElementById('adm-pass-inp').value;
   const err=document.getElementById('adm-pass-err');
@@ -431,13 +428,14 @@ function admLogin(){
     document.getElementById('adm-panel').style.display='flex';
     document.getElementById('adm-pass-inp').value='';
     err.textContent='';
-    renderAdmStats();
-    renderAdmList();
+    // Sincronizar localStorage com embed
+    const ls=JSON.parse(localStorage.getItem('ws_users')||'null');
+    if(!ls) saveUsers(JSON.parse(JSON.stringify(USUARIOS_EMBED)));
+    renderAdmStats();renderAdmList();
   } else {
     err.textContent='Senha incorreta.';
   }
 }
-
 function doAdmLogout(){
   sessionStorage.removeItem('ws_adm');
   document.getElementById('adm-login-box').style.display='flex';
@@ -446,44 +444,34 @@ function doAdmLogout(){
 }
 
 // ══════════════════════════════════════════
-// ADMIN — CADASTRAR USUÁRIO
+// ADMIN — CRUD
 // ══════════════════════════════════════════
-function fmtNasc(dateStr){
-  if(!dateStr) return '';
-  const[y,m,d]=dateStr.split('-');
-  return`${d}/${m}/${y}`;
-}
+function fmtNasc(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
 
 function admAddUser(){
   const nome=document.getElementById('a-nome').value.trim();
   const nascRaw=document.getElementById('a-nasc').value;
   const wpp=document.getElementById('a-wpp').value.trim().replace(/\D/g,'');
   const err=document.getElementById('a-err');
-  err.textContent='';
-
+  const ok=document.getElementById('a-ok');
+  err.textContent='';ok.textContent='';
   if(!nome){err.textContent='⚠️ Digite o nome completo.';return;}
   if(!nascRaw){err.textContent='⚠️ Selecione a data de nascimento.';return;}
-
   const nasc=fmtNasc(nascRaw);
   const users=loadUsers();
-
-  if(users.find(u=>u.nome.trim().toLowerCase()===nome.toLowerCase()&&u.nascimento===nasc)){
+  if(users.find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc)){
     err.textContent='⚠️ Usuário já cadastrado com esta data.';return;
   }
-
   users.unshift({id:genId(),nome,nascimento:nasc,wpp,status:'ativo',created:new Date().toISOString()});
   saveUsers(users);
   document.getElementById('a-nome').value='';
   document.getElementById('a-nasc').value='';
   document.getElementById('a-wpp').value='';
-  renderAdmStats();
-  renderAdmList();
+  renderAdmStats();renderAdmList();
+  ok.textContent='✅ '+nome+' cadastrado! Não esqueça de baixar o arquivo atualizado.';
   showToast('✅ '+nome+' cadastrado!');
 }
 
-// ══════════════════════════════════════════
-// ADMIN — IMPORTAR LOTE CSV
-// ══════════════════════════════════════════
 function admImportCSV(){
   const raw=document.getElementById('csv-inp').value.trim();
   if(!raw){showToast('⚠️ Cole os dados primeiro');return;}
@@ -494,24 +482,19 @@ function admImportCSV(){
     const pts=line.split(',').map(s=>s.trim());
     const nome=pts[0];let nascRaw=pts[1];const wpp=(pts[2]||'').replace(/\D/g,'');
     if(!nome||!nascRaw){skip++;return;}
-    // aceita DD/MM/AAAA ou AAAA-MM-DD
     let nasc=nascRaw;
     if(nascRaw.includes('-')){const[y,m,d]=nascRaw.split('-');nasc=`${d}/${m}/${y}`;}
-    if(users.find(u=>u.nome.trim().toLowerCase()===nome.toLowerCase()&&u.nascimento===nasc)){skip++;return;}
+    if(users.find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc)){skip++;return;}
     users.unshift({id:genId(),nome,nascimento:nasc,wpp,status:'ativo',created:new Date().toISOString()});
     added++;
   });
   saveUsers(users);
   document.getElementById('csv-inp').value='';
-  document.getElementById('csv-res').textContent=`✅ ${added} adicionado(s), ${skip} ignorado(s)`;
-  setTimeout(()=>document.getElementById('csv-res').textContent='',3000);
+  document.getElementById('csv-res').textContent=`✅ ${added} adicionado(s), ${skip} ignorado(s). Baixe o arquivo atualizado!`;
   renderAdmStats();renderAdmList();
-  showToast(`✅ ${added} usuário(s) importado(s)!`);
+  showToast(`✅ ${added} importado(s)!`);
 }
 
-// ══════════════════════════════════════════
-// ADMIN — LISTAR E GERENCIAR
-// ══════════════════════════════════════════
 function renderAdmStats(){
   const u=loadUsers();
   document.getElementById('as-total').textContent=u.length;
@@ -525,8 +508,7 @@ function renderAdmList(q=''){
   const list=q?users.filter(u=>u.nome.toLowerCase().includes(ql)):users;
   const el=document.getElementById('adm-user-list');
   if(!list.length){
-    el.innerHTML=`<div class="adm-empty">${q?'Nenhum resultado para "'+q+'"':'Nenhum usuário cadastrado ainda.<br>Adicione o primeiro acima.'}</div>`;
-    return;
+    el.innerHTML=`<div class="adm-empty">${q?'Nenhum resultado.':'Nenhum usuário cadastrado ainda.'}</div>`;return;
   }
   el.innerHTML=list.map(u=>`
     <div class="u-item">
@@ -535,52 +517,77 @@ function renderAdmList(q=''){
         <div class="u-nasc">📅 ${u.nascimento} &nbsp;${u.status==='ativo'?'<span class="badge-on">Ativo</span>':'<span class="badge-off">Bloqueado</span>'}</div>
       </div>
       <div class="u-actions">
-        <button class="u-btn ${u.status==='ativo'?'block':'unblock'}" onclick="admToggle('${u.id}')">${u.status==='ativo'?'🔒':'✅'}</button>
-        <button class="u-btn del" onclick="admDel('${u.id}')">🗑</button>
+        <button class="u-btn ${u.status==='ativo'?'blk':'act'}" onclick="admToggle('${u.id}')">${u.status==='ativo'?'🔒':'✅'}</button>
+        <button class="u-btn blk" onclick="admDel('${u.id}')">🗑</button>
       </div>
     </div>`).join('');
 }
 
 function admToggle(id){
   const users=loadUsers();
-  const u=users.find(x=>x.id===id);
-  if(!u) return;
+  const u=users.find(x=>x.id===id);if(!u)return;
   u.status=u.status==='ativo'?'bloqueado':'ativo';
-  saveUsers(users);
-  renderAdmStats();
-  renderAdmList(document.getElementById('adm-search').value);
-  showToast(u.status==='ativo'?`✅ ${u.nome} ativado`:`🔒 ${u.nome} bloqueado`);
+  saveUsers(users);renderAdmStats();renderAdmList(document.getElementById('adm-search').value);
+  showToast(u.status==='ativo'?`✅ Ativado`:`🔒 Bloqueado`);
 }
 
 function admDel(id){
-  if(!confirm('Excluir este usuário? Os dados do álbum dele serão perdidos.')) return;
+  if(!confirm('Excluir este usuário?'))return;
   const users=loadUsers().filter(x=>x.id!==id);
-  localStorage.removeItem('ws_album_'+id);
-  saveUsers(users);
-  renderAdmStats();
-  renderAdmList(document.getElementById('adm-search').value);
-  showToast('🗑 Usuário excluído');
+  saveUsers(users);renderAdmStats();renderAdmList(document.getElementById('adm-search').value);
+  showToast('🗑 Excluído');
 }
 
 function admChangePass(){
-  const nova=prompt('Digite a nova senha do administrador:');
-  if(!nova||nova.trim().length<4){showToast('⚠️ Senha muito curta (mín. 4 caracteres)');return;}
-  setAdmPass(nova.trim());
-  showToast('✅ Senha alterada com sucesso!');
+  const nova=prompt('Nova senha do administrador (mín. 4 caracteres):');
+  if(!nova||nova.trim().length<4){showToast('⚠️ Senha muito curta');return;}
+  localStorage.setItem('ws_adm_pass',nova.trim());
+  showToast('✅ Senha alterada!');
 }
 
 function admClearAll(){
-  if(!confirm('Apagar TODOS os usuários? Esta ação não pode ser desfeita!')) return;
-  saveUsers([]);
-  renderAdmStats();renderAdmList();
-  showToast('🗑 Todos os usuários removidos');
+  if(!confirm('Apagar TODOS os usuários? Não pode ser desfeito!'))return;
+  saveUsers([]);renderAdmStats();renderAdmList();
+  showToast('🗑 Todos removidos');
+}
+
+// ══════════════════════════════════════════
+// DOWNLOAD DO ARQUIVO ATUALIZADO
+// Reescreve o HTML com os usuários embutidos
+// ══════════════════════════════════════════
+function downloadUpdatedFile(){
+  const users=loadUsers();
+  const okEl=document.getElementById('export-ok');
+
+  // Pega o HTML completo da página
+  const html=document.documentElement.outerHTML;
+
+  // Substitui o array USUARIOS_EMBED com a lista atual
+  const usersJSON=JSON.stringify(users);
+  const updated=html.replace(
+    /var USUARIOS_EMBED\s*=\s*\[.*?\];/s,
+    'var USUARIOS_EMBED = '+usersJSON+';'
+  );
+
+  const blob=new Blob([updated],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='WorldSticker_App.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  okEl.textContent='✅ Arquivo baixado com '+users.length+' usuário(s)! Envie este arquivo para seus clientes.';
+  showToast('✅ Arquivo baixado com '+users.length+' usuário(s)!');
 }
 
 // ══════════════════════════════════════════
 // LOGIN USUÁRIO
 // ══════════════════════════════════════════
 let currentUser=null;
-function norm(s){return s.toLowerCase().trim().replace(/\s+/g,' ');}
+function norm(s){return s.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');}
 
 function doLogin(){
   const nome=document.getElementById('inp-name').value.trim();
@@ -592,8 +599,12 @@ function doLogin(){
   if(!nome){err.textContent='Digite seu nome.';return;}
   if(!d||!m||!y){err.textContent='Selecione sua data de nascimento completa.';return;}
   const nasc=`${d}/${m}/${y}`;
-  const found=loadUsers().find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc);
-  if(!found){err.textContent='Nome ou data de nascimento incorretos.';return;}
+  const users=loadUsers();
+  const found=users.find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc);
+  if(!found){
+    err.textContent='Nome ou data de nascimento incorretos. Verifique com o administrador.';
+    return;
+  }
   if(found.status==='bloqueado'){showScreen('scr-blocked');return;}
   currentUser=found;
   sessionStorage.setItem('ws_sess',JSON.stringify({id:found.id,nome:found.nome}));
@@ -603,13 +614,11 @@ function doLogin(){
 function startApp(){
   document.getElementById('u-name').textContent=currentUser.nome.split(' ')[0];
   showScreen('scr-app');
-  buildGroups();
-  updateHeader();
+  buildGroups();updateHeader();
 }
 
 function doLogout(){
-  sessionStorage.removeItem('ws_sess');
-  currentUser=null;
+  sessionStorage.removeItem('ws_sess');currentUser=null;
   document.getElementById('inp-name').value='';
   document.getElementById('inp-day').value='';
   document.getElementById('inp-month').value='';
@@ -618,11 +627,11 @@ function doLogout(){
 }
 
 function contactSupport(){
-  window.open('https://wa.me/5583999999999?text=Olá!+Meu+acesso+ao+WorldSticker+foi+bloqueado.','_blank');
+  window.open('https://wa.me/5583999999999?text=Meu+acesso+ao+WorldSticker+foi+bloqueado.','_blank');
 }
 
 // ══════════════════════════════════════════
-// ÁLBUM — estado por usuário
+// ÁLBUM
 // ══════════════════════════════════════════
 let state={};
 function albumKey(){return 'ws_album_'+currentUser.id;}
@@ -730,7 +739,7 @@ function buildTrocas(){
   const list=document.getElementById('trocas-list');list.innerHTML='';let found=false;
   Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
     const ns=[];for(let n=1;n<=20;n++) if(getS(g,ti,n)===2) ns.push(n);
-    if(!ns.length) return;found=true;
+    if(!ns.length)return;found=true;
     const el=document.createElement('div');el.className='ti';
     el.innerHTML=`<span class="tif">${t.f}</span><div style="flex:1"><div class="tin">${t.n}</div><div class="tinu">Fig.: ${ns.join(', ')}</div></div><span style="color:var(--orange);font-size:19px;font-weight:700">${ns.length}</span>`;
     list.appendChild(el);
@@ -743,7 +752,7 @@ function shareWpp(){
   let any=false;
   Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
     const ns=[];for(let n=1;n<=20;n++) if(getS(g,ti,n)===2) ns.push(n);
-    if(!ns.length) return;any=true;
+    if(!ns.length)return;any=true;
     lines.push(`${t.f} *${t.n}*: fig. ${ns.join(', ')}`);
   }));
   if(!any){showToast('Nenhuma marcada como 🔄 ainda!');return;}
@@ -765,12 +774,10 @@ let toastT;
 function showToast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;el.classList.add('on');
-  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1800);
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),2000);
 }
 
-// ══════════════════════════════════════════
-// SELECTS DIA / ANO
-// ══════════════════════════════════════════
+// Selects dia/ano
 (function(){
   const day=document.getElementById('inp-day');
   for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=String(i).padStart(2,'0');o.textContent=i;day.appendChild(o);}
@@ -783,15 +790,14 @@ function showToast(msg){
 // BOOT
 // ══════════════════════════════════════════
 (function boot(){
-  // Admin já logado nesta sessão?
   if(sessionStorage.getItem('ws_adm')){
     showScreen('scr-admin');
     document.getElementById('adm-login-box').style.display='none';
     document.getElementById('adm-panel').style.display='flex';
-    renderAdmStats();renderAdmList();
-    return;
+    const ls=JSON.parse(localStorage.getItem('ws_users')||'null');
+    if(!ls) saveUsers(JSON.parse(JSON.stringify(USUARIOS_EMBED)));
+    renderAdmStats();renderAdmList();return;
   }
-  // Usuário já logado nesta sessão?
   const sess=sessionStorage.getItem('ws_sess');
   if(sess){
     try{
