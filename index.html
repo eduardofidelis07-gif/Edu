@@ -388,6 +388,887 @@ const TOTAL=12*4*20;
 // ══════════════════════════════════════════
 var USUARIOS_EMBED = []; // <<< LISTA EMBUTIDA — preenchida pelo admin e regravada no download
 
+// Carrega usuários: USUARIOS_EMBED é a fonte principal no arquivo do cliente
+// localStorage só é usado no painel admin para edições temporárias
+function loadUsers(){
+  try{
+    // Se houver dados no localStorage E tiver mais usuários que o embed,
+    // significa que o admin está editando — usa o localStorage
+    const ls=JSON.parse(localStorage.getItem('ws_users')||'null');
+    if(ls && Array.isArray(ls) && ls.length>=USUARIOS_EMBED.length && ls.length>0){
+      return ls;
+    }
+  }catch(e){}
+  // Caso contrário usa o embed (arquivo enviado ao cliente)
+  // e sincroniza no localStorage para o admin poder editar
+  const embed=JSON.parse(JSON.stringify(USUARIOS_EMBED));
+  if(embed.length>0){
+    try{ localStorage.setItem('ws_users',JSON.stringify(embed)); }catch(e){}
+  }
+  return embed;
+}
+function saveUsers(u){
+  localStorage.setItem('ws_users',JSON.stringify(u));
+}
+function genId(){return 'u'+Date.now()+Math.random().toString(36).substr(2,4);}
+
+// ══════════════════════════════════════════
+// SECRET TAP — 5x no ⚽
+// ══════════════════════════════════════════
+let tapCount=0,tapTimer;
+function secretTap(){
+  tapCount++;clearTimeout(tapTimer);
+  tapTimer=setTimeout(()=>tapCount=0,1500);
+  if(tapCount>=5){
+    tapCount=0;
+    document.getElementById('adm-link').style.display='block';
+    showToast('⚙️ Admin desbloqueado');
+  }
+}
+
+// ══════════════════════════════════════════
+// AUTH ADMIN
+// ══════════════════════════════════════════
+function getAdmPass(){return localStorage.getItem('ws_adm_pass')||'admin2026';}
+function admLogin(){
+  const p=document.getElementById('adm-pass-inp').value;
+  const err=document.getElementById('adm-pass-err');
+  if(p===getAdmPass()){
+    sessionStorage.setItem('ws_adm','1');
+    document.getElementById('adm-login-box').style.display='none';
+    document.getElementById('adm-panel').style.display='flex';
+    document.getElementById('adm-pass-inp').value='';
+    err.textContent='';
+    // Sincronizar localStorage com embed
+    const ls=JSON.parse(localStorage.getItem('ws_users')||'null');
+    if(!ls) saveUsers(JSON.parse(JSON.stringify(USUARIOS_EMBED)));
+    renderAdmStats();renderAdmList();
+  } else {
+    err.textContent='Senha incorreta.';
+  }
+}
+function doAdmLogout(){
+  sessionStorage.removeItem('ws_adm');
+  document.getElementById('adm-login-box').style.display='flex';
+  document.getElementById('adm-panel').style.display='none';
+  showScreen('scr-login');
+}
+
+// ══════════════════════════════════════════
+// ADMIN — CRUD
+// ══════════════════════════════════════════
+function fmtNasc(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
+
+function admAddUser(){
+  const nome=document.getElementById('a-nome').value.trim();
+  const nascRaw=document.getElementById('a-nasc').value;
+  const wpp=document.getElementById('a-wpp').value.trim().replace(/\D/g,'');
+  const err=document.getElementById('a-err');
+  const ok=document.getElementById('a-ok');
+  err.textContent='';ok.textContent='';
+  if(!nome){err.textContent='⚠️ Digite o nome completo.';return;}
+  if(!nascRaw){err.textContent='⚠️ Selecione a data de nascimento.';return;}
+  const nasc=fmtNasc(nascRaw);
+  const users=loadUsers();
+  if(users.find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc)){
+    err.textContent='⚠️ Usuário já cadastrado com esta data.';return;
+  }
+  users.unshift({id:genId(),nome,nascimento:nasc,wpp,status:'ativo',created:new Date().toISOString()});
+  saveUsers(users);
+  document.getElementById('a-nome').value='';
+  document.getElementById('a-nasc').value='';
+  document.getElementById('a-wpp').value='';
+  renderAdmStats();renderAdmList();
+  ok.textContent='✅ '+nome+' cadastrado! Não esqueça de baixar o arquivo atualizado.';
+  showToast('✅ '+nome+' cadastrado!');
+}
+
+function admImportCSV(){
+  const raw=document.getElementById('csv-inp').value.trim();
+  if(!raw){showToast('⚠️ Cole os dados primeiro');return;}
+  const lines=raw.split('\n').filter(l=>l.trim());
+  const users=loadUsers();
+  let added=0,skip=0;
+  lines.forEach(line=>{
+    const pts=line.split(',').map(s=>s.trim());
+    const nome=pts[0];let nascRaw=pts[1];const wpp=(pts[2]||'').replace(/\D/g,'');
+    if(!nome||!nascRaw){skip++;return;}
+    let nasc=nascRaw;
+    if(nascRaw.includes('-')){const[y,m,d]=nascRaw.split('-');nasc=`${d}/${m}/${y}`;}
+    if(users.find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc)){skip++;return;}
+    users.unshift({id:genId(),nome,nascimento:nasc,wpp,status:'ativo',created:new Date().toISOString()});
+    added++;
+  });
+  saveUsers(users);
+  document.getElementById('csv-inp').value='';
+  document.getElementById('csv-res').textContent=`✅ ${added} adicionado(s), ${skip} ignorado(s). Baixe o arquivo atualizado!`;
+  renderAdmStats();renderAdmList();
+  showToast(`✅ ${added} importado(s)!`);
+}
+
+function renderAdmStats(){
+  const u=loadUsers();
+  document.getElementById('as-total').textContent=u.length;
+  document.getElementById('as-ativo').textContent=u.filter(x=>x.status==='ativo').length;
+  document.getElementById('as-bloq').textContent=u.filter(x=>x.status==='bloqueado').length;
+}
+
+function renderAdmList(q=''){
+  const users=loadUsers();
+  const ql=q.toLowerCase();
+  const list=q?users.filter(u=>u.nome.toLowerCase().includes(ql)):users;
+  const el=document.getElementById('adm-user-list');
+  if(!list.length){
+    el.innerHTML=`<div class="adm-empty">${q?'Nenhum resultado.':'Nenhum usuário cadastrado ainda.'}</div>`;return;
+  }
+  el.innerHTML=list.map(u=>`
+    <div class="u-item">
+      <div class="u-info">
+        <div class="u-name">${esc(u.nome)}</div>
+        <div class="u-nasc">📅 ${u.nascimento} &nbsp;${u.status==='ativo'?'<span class="badge-on">Ativo</span>':'<span class="badge-off">Bloqueado</span>'}</div>
+      </div>
+      <div class="u-actions">
+        <button class="u-btn ${u.status==='ativo'?'blk':'act'}" onclick="admToggle('${u.id}')">${u.status==='ativo'?'🔒':'✅'}</button>
+        <button class="u-btn blk" onclick="admDel('${u.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function admToggle(id){
+  const users=loadUsers();
+  const u=users.find(x=>x.id===id);if(!u)return;
+  u.status=u.status==='ativo'?'bloqueado':'ativo';
+  saveUsers(users);renderAdmStats();renderAdmList(document.getElementById('adm-search').value);
+  showToast(u.status==='ativo'?`✅ Ativado`:`🔒 Bloqueado`);
+}
+
+function admDel(id){
+  if(!confirm('Excluir este usuário?'))return;
+  const users=loadUsers().filter(x=>x.id!==id);
+  saveUsers(users);renderAdmStats();renderAdmList(document.getElementById('adm-search').value);
+  showToast('🗑 Excluído');
+}
+
+function admChangePass(){
+  const nova=prompt('Nova senha do administrador (mín. 4 caracteres):');
+  if(!nova||nova.trim().length<4){showToast('⚠️ Senha muito curta');return;}
+  localStorage.setItem('ws_adm_pass',nova.trim());
+  showToast('✅ Senha alterada!');
+}
+
+function admClearAll(){
+  if(!confirm('Apagar TODOS os usuários? Não pode ser desfeito!'))return;
+  saveUsers([]);renderAdmStats();renderAdmList();
+  showToast('🗑 Todos removidos');
+}
+
+// ══════════════════════════════════════════
+// DOWNLOAD DO ARQUIVO ATUALIZADO
+// ══════════════════════════════════════════
+function downloadUpdatedFile(){
+  const users=loadUsers();
+  const okEl=document.getElementById('export-ok');
+
+  if(!users.length){
+    showToast('⚠️ Cadastre ao menos 1 usuário antes de baixar.');
+    return;
+  }
+
+  // Busca o arquivo HTML original via fetch (evita pegar estado do DOM)
+  // e substitui apenas o USUARIOS_EMBED — sem sessionStorage, sem estado
+  fetch(window.location.href)
+    .then(r=>r.text())
+    .then(originalHtml=>{
+      const usersJSON=JSON.stringify(users);
+
+      // Substitui o array embutido pelo atualizado
+      let updated=originalHtml.replace(
+        /var USUARIOS_EMBED\s*=\s*\[[\s\S]*?\];/,
+        'var USUARIOS_EMBED = '+usersJSON+';'
+      );
+
+      // Garante que o arquivo baixado NUNCA abre no admin automaticamente
+      // removendo qualquer sessionStorage residual no boot
+      updated=updated.replace(
+        "(function boot(){",
+        "(function boot(){ sessionStorage.removeItem('ws_adm'); sessionStorage.removeItem('ws_sess');"
+      );
+
+      const blob=new Blob([updated],{type:'text/html;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='WorldSticker_App.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      okEl.textContent='✅ Arquivo baixado com '+users.length+' usuário(s)! Envie para seus clientes.';
+      showToast('✅ '+users.length+' usuário(s) gravados no arquivo!');
+    })
+    .catch(()=>{
+      // Fallback: se fetch falhar (ex: arquivo local), usa outerHTML mas limpa sessões
+      const usersJSON=JSON.stringify(users);
+      let updated=document.documentElement.outerHTML;
+      updated=updated.replace(
+        /var USUARIOS_EMBED\s*=\s*\[[\s\S]*?\];/,
+        'var USUARIOS_EMBED = '+usersJSON+';'
+      );
+      // Remove sessão admin do HTML gerado
+      updated=updated.replace(
+        "(function boot(){",
+        "(function boot(){ sessionStorage.removeItem('ws_adm'); sessionStorage.removeItem('ws_sess');"
+      );
+      const blob=new Blob([updated],{type:'text/html;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='WorldSticker_App.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      okEl.textContent='✅ Arquivo baixado com '+users.length+' usuário(s)!';
+      showToast('✅ '+users.length+' usuário(s) gravados!');
+    });
+}
+
+// ══════════════════════════════════════════
+// LOGIN USUÁRIO
+// ══════════════════════════════════════════
+let currentUser=null;
+function norm(s){return s.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');}
+
+function doLogin(){
+  const nome=document.getElementById('inp-name').value.trim();
+  const d=document.getElementById('inp-day').value;
+  const m=document.getElementById('inp-month').value;
+  const y=document.getElementById('inp-year').value;
+  const err=document.getElementById('login-err');
+  err.textContent='';
+  if(!nome){err.textContent='Digite seu nome.';return;}
+  if(!d||!m||!y){err.textContent='Selecione sua data de nascimento completa.';return;}
+  const nasc=`${d}/${m}/${y}`;
+  const users=loadUsers();
+  const found=users.find(u=>norm(u.nome)===norm(nome)&&u.nascimento===nasc);
+  if(!found){
+    err.textContent='Nome ou data de nascimento incorretos. Verifique com o administrador.';
+    return;
+  }
+  if(found.status==='bloqueado'){showScreen('scr-blocked');return;}
+  currentUser=found;
+  sessionStorage.setItem('ws_sess',JSON.stringify({id:found.id,nome:found.nome}));
+  startApp();
+}
+
+function startApp(){
+  document.getElementById('u-name').textContent=currentUser.nome.split(' ')[0];
+  showScreen('scr-app');
+  buildGroups();updateHeader();
+}
+
+function doLogout(){
+  sessionStorage.removeItem('ws_sess');currentUser=null;
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-day').value='';
+  document.getElementById('inp-month').value='';
+  document.getElementById('inp-year').value='';
+  showScreen('scr-login');
+}
+
+function contactSupport(){
+  window.open('https://wa.me/5583999999999?text=Meu+acesso+ao+WorldSticker+foi+bloqueado.','_blank');
+}
+
+// ══════════════════════════════════════════
+// ÁLBUM
+// ══════════════════════════════════════════
+let state={};
+function albumKey(){return 'ws_album_'+currentUser.id;}
+function loadState(){try{return JSON.parse(localStorage.getItem(albumKey())||'{}');}catch(e){return{};}}
+function saveState(s){localStorage.setItem(albumKey(),JSON.stringify(s));}
+function getS(g,ti,n){return state[`${g}-${ti}-${n}`]||0;}
+function cycleS(g,ti,n){const k=`${g}-${ti}-${n}`;state[k]=((state[k]||0)+1)%3;saveState(state);}
+
+const SC=['miss','have','dup'];
+const SI=['❌','✅','🔄'];
+
+function calcTotals(){
+  let h=0,m=0,d=0;
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    for(let n=1;n<=20;n++){const s=getS(g,ti,n);if(s===1)h++;else if(s===2)d++;else m++;}
+  }));
+  return{h,m,d};
+}
+
+function updateHeader(){
+  const{h,m,d}=calcTotals();
+  const pct=Math.round(h/TOTAL*100);
+  document.getElementById('k-pct').textContent=pct+'%';
+  document.getElementById('k-have').textContent=h;
+  document.getElementById('k-miss').textContent=m;
+  document.getElementById('k-dup').textContent=d;
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('p-l').textContent=`${h} de ${TOTAL}`;
+  document.getElementById('p-r').textContent=pct+'%';
+}
+
+function buildGroups(){
+  state=loadState();
+  const c=document.getElementById('groups');c.innerHTML='';
+  Object.keys(GRUPOS).forEach(g=>{
+    const el=document.createElement('div');el.className='gc';el.id='gc-'+g;
+    el.innerHTML=`<div class="gh" onclick="togG('${g}')"><div class="ghl"><span class="gl" style="color:${GC[g]}">G${g}</span><div><div class="gn">GRUPO ${g}</div><div class="gt">${GRUPOS[g].map(t=>t.f).join(' ')}</div></div></div><div style="display:flex;align-items:center"><span class="gp" id="gp-${g}">0%</span><span class="cv">⌄</span></div></div><div class="gbody" id="gb-${g}">${GRUPOS[g].map((t,ti)=>buildTeam(g,ti,t)).join('')}</div>`;
+    c.appendChild(el);
+  });
+  updGStats();
+}
+
+function buildTeam(g,ti,t){
+  let s='';
+  for(let n=1;n<=20;n++){const v=getS(g,ti,n);s+=`<div class="st ${SC[v]}" onclick="tap('${g}',${ti},${n},this)"><span class="sn">${n}</span><span class="sic">${SI[v]}</span></div>`;}
+  return`<div class="tsec"><div class="th2"><span class="tf">${t.f}</span><span class="tn2">${t.n}</span><div class="tms" id="ts-${g}-${ti}"></div></div><div class="sg" id="sg-${g}-${ti}">${s}</div></div>`;
+}
+
+function tap(g,ti,n,el){
+  cycleS(g,ti,n);const v=getS(g,ti,n);
+  el.className='st '+SC[v];el.querySelector('.sic').textContent=SI[v];
+  updateHeader();updGStats();updTeam(g,ti);
+  if(document.getElementById('tab-trocas').style.display!=='none') buildTrocas();
+  if(navigator.vibrate) navigator.vibrate(22);
+  showToast(['❌ Falta','✅ Colada!','🔄 Para troca'][v]);
+}
+
+function updGStats(){
+  Object.keys(GRUPOS).forEach(g=>{
+    let h=0;GRUPOS[g].forEach((t,ti)=>{for(let n=1;n<=20;n++) if(getS(g,ti,n)===1)h++;});
+    const el=document.getElementById('gp-'+g);
+    if(el) el.textContent=Math.round(h/(GRUPOS[g].length*20)*100)+'%';
+    GRUPOS[g].forEach((t,ti)=>updTeam(g,ti));
+  });
+}
+
+function updTeam(g,ti){
+  const el=document.getElementById('ts-'+g+'-'+ti);if(!el)return;
+  let h=0,d=0,m=0;
+  for(let n=1;n<=20;n++){const v=getS(g,ti,n);if(v===1)h++;else if(v===2)d++;else m++;}
+  el.innerHTML=`<span class="mh">✅${h}</span><span class="mf">❌${m}</span>${d?`<span class="md">🔄${d}</span>`:''}`;
+}
+
+function togG(g){document.getElementById('gc-'+g).classList.toggle('open');}
+
+function filterGroups(q){
+  const qn=q.toLowerCase();
+  Object.keys(GRUPOS).forEach(g=>{
+    const ok=('grupo '+g).includes(qn)||GRUPOS[g].some(t=>t.n.toLowerCase().includes(qn));
+    const el=document.getElementById('gc-'+g);
+    el.style.display=ok?'':'none';
+    if(ok&&qn) el.classList.add('open');
+  });
+}
+
+function setFilter(f,el){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    const grid=document.getElementById('sg-'+g+'-'+ti);if(!grid)return;
+    grid.querySelectorAll('.st').forEach((sEl,i)=>{
+      const v=getS(g,ti,i+1);
+      sEl.style.display=(f==='all'||(f==='have'&&v===1)||(f==='miss'&&v===0)||(f==='dup'&&v===2))?'':'none';
+    });
+  }));
+}
+
+function goTab(t,el){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  document.getElementById('tab-album').style.display=t==='album'?'':'none';
+  document.getElementById('tab-trocas').style.display=t==='trocas'?'':'none';
+  if(t==='trocas') buildTrocas();
+}
+
+function buildTrocas(){
+  const list=document.getElementById('trocas-list');list.innerHTML='';let found=false;
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    const ns=[];for(let n=1;n<=20;n++) if(getS(g,ti,n)===2) ns.push(n);
+    if(!ns.length)return;found=true;
+    const el=document.createElement('div');el.className='ti';
+    el.innerHTML=`<span class="tif">${t.f}</span><div style="flex:1"><div class="tin">${t.n}</div><div class="tinu">Fig.: ${ns.join(', ')}</div></div><span style="color:var(--orange);font-size:19px;font-weight:700">${ns.length}</span>`;
+    list.appendChild(el);
+  }));
+  if(!found) list.innerHTML='<div class="empty"><div>🔄</div><p>Nenhuma repetida ainda.<br>Marque como 🔄 no álbum.</p></div>';
+}
+
+function shareWpp(){
+  const lines=['⚽ *WorldSticker — Minhas Trocas Copa 2026* 🔥\n'];
+  let any=false;
+  Object.keys(GRUPOS).forEach(g=>GRUPOS[g].forEach((t,ti)=>{
+    const ns=[];for(let n=1;n<=20;n++) if(getS(g,ti,n)===2) ns.push(n);
+    if(!ns.length)return;any=true;
+    lines.push(`${t.f} *${t.n}*: fig. ${ns.join(', ')}`);
+  }));
+  if(!any){showToast('Nenhuma marcada como 🔄 ainda!');return;}
+  const{h,d}=calcTotals();
+  lines.push(`\n📊 ${Math.round(h/TOTAL*100)}% completo | ${d} repetidas`);
+  lines.push('📲 WorldSticker — Copa 2026');
+  window.open('https://wa.me/?text='+encodeURIComponent(lines.join('\n')),'_blank');
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function esc(s){return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let toastT;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),2000);
+}
+
+// Selects dia/ano
+(function(){
+  const day=document.getElementById('inp-day');
+  for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=String(i).padStart(2,'0');o.textContent=i;day.appendChild(o);}
+  const year=document.getElementById('inp-year');
+  const cur=new Date().getFullYear();
+  for(let y=cur-5;y>=cur-80;y--){const o=document.createElement('option');o.value=y;o.textContent=y;year.appendChild(o);}
+})();
+
+// ══════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════
+(function boot(){
+  // Ao abrir o arquivo baixado, limpar qualquer sessão residual do admin
+  // para garantir que o cliente sempre veja a tela de login
+  const isDownloadedFile = USUARIOS_EMBED.length > 0;
+  if(isDownloadedFile){
+    // Arquivo já tem usuários embutidos = é o arquivo do cliente
+    // Nunca restaurar sessão de admin automaticamente
+    sessionStorage.removeItem('ws_adm');
+  }
+
+  if(sessionStorage.getItem('ws_adm') && !isDownloadedFile){
+    // Só restaura sessão admin se for arquivo sem usuários (original do admin)
+    showScreen('scr-admin');
+    document.getElementById('adm-login-box').style.display='none';
+    document.getElementById('adm-panel').style.display='flex';
+    const ls=JSON.parse(localStorage.getItem('ws_users')||'null');
+    if(!ls) saveUsers(JSON.parse(JSON.stringify(USUARIOS_EMBED)));
+    renderAdmStats();renderAdmList();return;
+  }
+
+  if(sessionStorage.getItem('ws_adm') && isDownloadedFile){
+    // Admin abriu o arquivo do cliente — tratar como arquivo de usuário
+    sessionStorage.removeItem('ws_adm');
+  }
+
+  const sess=sessionStorage.getItem('ws_sess');
+  if(sess){
+    try{
+      const{id}=JSON.parse(sess);
+      const u=loadUsers().find(x=>x.id===id);
+      if(u&&u.status!=='bloqueado'){currentUser=u;startApp();return;}
+    }catch(e){}
+    sessionStorage.removeItem('ws_sess');
+  }
+  showScreen('scr-login');
+})();
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0a1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WorldSticker">
+<title>WorldSticker ⚽</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1628;--bg2:#111e35;--bg3:#172443;--card:#131f38;
+  --gold:#f5c518;--gold2:#e8a800;
+  --green:#00c853;--red:#ff3d3d;--orange:#ff6d00;
+  --dark:#0d1117;--dark2:#161b22;--dark3:#1c2128;
+  --text:#f0f4ff;--muted:#6b80a8;--border:rgba(255,255,255,0.08);
+  --r:14px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Barlow',sans-serif;color:var(--text)}
+#app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto}
+.scr{display:none;flex-direction:column;height:100%;overflow:hidden;animation:fi .2s ease}
+.scr.on{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* LOGIN */
+#scr-login{background:radial-gradient(ellipse at 50% -10%,rgba(245,197,24,.12),transparent 60%),var(--bg);align-items:center;justify-content:center;padding:24px;text-align:center;overflow-y:auto}
+.ball{font-size:52px;margin-bottom:12px;display:block;animation:bonce 2s ease-in-out infinite;cursor:pointer;user-select:none}
+@keyframes bonce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.l-logo{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;color:var(--gold);line-height:1}
+.l-sub{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:28px;margin-top:3px}
+.l-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:100%;max-width:340px;text-align:left}
+.l-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px}
+.l-hint-txt{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.lbl{font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.8px;margin-bottom:5px;display:block}
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 13px;color:var(--text);font-size:15px;font-family:'Barlow',sans-serif;outline:none;-webkit-appearance:none;appearance:none;margin-bottom:11px}
+.inp:focus{border-color:rgba(245,197,24,.4)}
+.drow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:18px}
+.dsel{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 6px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;-webkit-appearance:none;appearance:none;text-align:center;cursor:pointer}
+.dsel:focus{border-color:rgba(245,197,24,.4)}
+.dsel option{background:var(--bg3)}
+.l-btn{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:var(--rs);padding:15px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.5px;cursor:pointer;transition:opacity .15s,transform .1s}
+.l-btn:active{opacity:.86;transform:scale(.98)}
+.l-err{color:var(--red);font-size:12px;text-align:center;margin-top:9px;min-height:15px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+.l-foot{margin-top:14px;text-align:center;font-size:12px;color:var(--muted);line-height:1.5}
+#adm-link{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);text-align:center;display:none}
+#adm-link button{background:transparent;border:1px solid rgba(245,197,24,.25);border-radius:var(--rs);padding:10px 18px;color:rgba(245,197,24,.7);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;cursor:pointer;width:100%}
+
+/* BLOCKED */
+#scr-blocked{align-items:center;justify-content:center;padding:32px;text-align:center}
+.blk-icon{font-size:60px;margin-bottom:18px}
+.blk-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);margin-bottom:8px}
+.blk-msg{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;max-width:290px}
+.blk-btn{background:#25d366;color:#fff;border:none;border-radius:99px;padding:13px 26px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+
+/* ADMIN */
+#scr-admin{background:var(--dark);overflow:hidden}
+.adm-top{background:var(--dark2);border-bottom:1px solid rgba(255,255,255,.1);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.adm-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold)}
+.adm-scroll{flex:1;overflow-y:auto;padding:16px}
+.adm-scroll::-webkit-scrollbar{display:none}
+.adm-section{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:18px;margin-bottom:14px}
+.adm-sec-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.3px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.adm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.adm-stat{background:var(--dark2);border-radius:9px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.07)}
+.adm-sv{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1}
+.adm-sl{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;margin-top:1px}
+.adm-inp{width:100%;background:var(--dark2);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:9px;-webkit-appearance:none;appearance:none}
+.adm-inp:focus{border-color:rgba(245,197,24,.4)}
+.adm-btn{width:100%;background:var(--gold);color:#0a1628;border:none;border-radius:7px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px}
+.adm-btn.sec{background:var(--dark2);color:var(--muted);border:1px solid rgba(255,255,255,.1)}
+.adm-btn.danger{background:rgba(255,61,61,.15);color:var(--red);border:1px solid rgba(255,61,61,.25)}
+.adm-err{color:var(--red);font-size:12px;margin-top:6px;min-height:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+.adm-ok{color:var(--green);font-size:12px;margin-top:6px;min-height:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+/* AVISO IMPORTANTE */
+.adm-alert{background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.3);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:var(--gold);line-height:1.6}
+.adm-alert strong{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px}
+/* user list */
+.u-item{background:var(--dark2);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.u-info{flex:1;min-width:0}
+.u-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-nasc{font-size:12px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:600}
+.u-actions{display:flex;gap:5px;flex-shrink:0}
+.u-btn{background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.u-btn.blk{border-color:rgba(255,61,61,.3);color:var(--red)}
+.u-btn.act{border-color:rgba(0,200,83,.3);color:var(--green)}
+.badge-on{display:inline-block;background:rgba(0,200,83,.15);color:var(--green);border-radius:99px;padding:2px 8px;font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.badge-off{display:inline-block;background:rgba(255,61,61,.15);color:var(--red);border-radius:99px;padding:2px 8px;font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.adm-search{width:100%;background:var(--dark2);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:12px;-webkit-appearance:none;appearance:none}
+.adm-empty{text-align:center;padding:24px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px}
+.csv-area{width:100%;background:var(--dark2);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:11px 12px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical;min-height:80px;outline:none;-webkit-appearance:none;appearance:none;margin-bottom:9px}
+#adm-login-box{padding:32px 24px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.adm-login-card{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:22px;width:100%;max-width:300px}
+/* EXPORT btn */
+.export-btn{width:100%;background:var(--bg3);border:1px dashed rgba(245,197,24,.4);border-radius:7px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;cursor:pointer;color:var(--gold);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* APP */
+#scr-app{background:var(--bg)}
+header{background:var(--bg2);padding:12px 16px 0;flex-shrink:0;border-bottom:1px solid var(--border)}
+.htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--gold);line-height:1}
+.logo-sub{font-size:11px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1.5px;opacity:.5;margin-top:1px}
+.hbtns{display:flex;gap:7px;align-items:center}
+.hbtn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:7px 12px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;color:var(--muted)}
+.hbtn:active{transform:scale(.92)}
+.wbtn{background:#25d366;color:#fff;border:none;border-radius:20px;padding:7px 13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.wbtn:active{transform:scale(.92)}
+.wbtn svg{width:13px;height:13px;fill:#fff;flex-shrink:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding-bottom:10px}
+.kpi{background:var(--bg3);border-radius:var(--rs);padding:7px 3px;text-align:center;border:1px solid var(--border)}
+.kv{font-family:'Bebas Neue',sans-serif;font-size:21px;line-height:1}
+.kl{font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.3px;opacity:.55;margin-top:1px}
+.kp .kv{color:var(--gold)}.kt .kv{color:var(--green)}.kf .kv{color:var(--red)}.kr .kv{color:var(--orange)}
+.pw{padding:0 0 10px}
+.pb{background:var(--bg3);border-radius:99px;height:5px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:99px;transition:width .5s}
+.pl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
+nav{display:flex}
+nav button{flex:1;background:none;border:none;color:var(--muted);padding:10px 4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+nav button.on{color:var(--gold);border-bottom-color:var(--gold)}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
+main::-webkit-scrollbar{display:none}
+.sw{position:relative;margin-bottom:10px}
+.sw input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 10px 10px 33px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;-webkit-appearance:none;appearance:none}
+.sw input::placeholder{color:var(--muted)}
+.sw input:focus{border-color:rgba(245,197,24,.3)}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.chips{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:6px 12px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--muted);flex-shrink:0}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#0a1628}
+.chip:active{transform:scale(.92)}
+.gc{background:var(--card);border-radius:var(--r);border:1px solid var(--border);margin-bottom:10px;overflow:hidden}
+.gh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none}
+.ghl{display:flex;align-items:center;gap:10px}
+.gl{font-family:'Bebas Neue',sans-serif;font-size:25px;line-height:1;min-width:20px}
+.gn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;opacity:.6}
+.gt{font-size:11px;opacity:.4;margin-top:1px}
+.gp{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--gold)}
+.cv{color:var(--muted);font-size:15px;transition:transform .2s;margin-left:4px}
+.gc.open .cv{transform:rotate(180deg)}
+.gbody{display:none;border-top:1px solid var(--border)}
+.gc.open .gbody{display:block}
+.tsec{border-bottom:1px solid var(--border)}
+.tsec:last-child{border-bottom:none}
+.th2{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--bg3)}
+.tf{font-size:18px}.tn2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;flex:1}
+.tms{display:flex;gap:5px;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.mh{color:var(--green)}.mf{color:var(--red)}.md{color:var(--orange)}
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:9px 14px}
+.st{border-radius:var(--rs);border:1.5px solid var(--border);aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .1s;background:var(--bg2);min-height:50px}
+.st:active{transform:scale(.84)}
+.sn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;line-height:1}
+.sic{font-size:14px;line-height:1;margin-top:1px}
+.st.have{background:rgba(0,200,83,.12);border-color:var(--green)}.st.have .sn{color:var(--green)}
+.st.miss{background:var(--bg2)}.st.miss .sn{color:var(--muted)}
+.st.dup{background:rgba(255,109,0,.12);border-color:var(--orange)}.st.dup .sn{color:var(--orange)}
+.ti{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.tif{font-size:20px}
+.tin{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px}
+.tinu{font-size:12px;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:600}
+.empty{text-align:center;padding:36px 20px;color:var(--muted)}
+.empty div{font-size:36px;margin-bottom:8px}
+.empty p{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px}
+#toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:rgba(26,46,80,.96);backdrop-filter:blur(8px);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:9px 18px;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;z-index:999}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.bsafe{height:env(safe-area-inset-bottom,0px);flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOGIN -->
+<div class="scr" id="scr-login">
+  <span class="ball" onclick="secretTap()">⚽</span>
+  <div class="l-logo">WorldSticker</div>
+  <div class="l-sub">Copa do Mundo 2026</div>
+  <div class="l-card">
+    <div class="l-title">Entrar no seu álbum</div>
+    <div class="l-hint-txt">Digite o nome e a data de nascimento cadastrados pelo administrador.</div>
+    <label class="lbl">Seu nome</label>
+    <input class="inp" type="text" id="inp-name" placeholder="Ex: João Silva" autocomplete="name" autocorrect="off" autocapitalize="words">
+    <label class="lbl">Data de nascimento</label>
+    <div class="drow">
+      <select class="dsel" id="inp-day"><option value="">Dia</option></select>
+      <select class="dsel" id="inp-month">
+        <option value="">Mês</option>
+        <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option>
+        <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
+        <option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option>
+        <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+      </select>
+      <select class="dsel" id="inp-year"><option value="">Ano</option></select>
+    </div>
+    <button class="l-btn" onclick="doLogin()">Entrar no Álbum →</button>
+    <div class="l-err" id="login-err"></div>
+    <div class="l-foot">Não tem acesso? Fale com o <strong style="color:var(--gold)">administrador</strong>.</div>
+    <div id="adm-link">
+      <button onclick="showScreen('scr-admin')">⚙️ Área do Administrador</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCKED -->
+<div class="scr" id="scr-blocked">
+  <div class="blk-icon">🚫</div>
+  <div class="blk-title">Acesso Bloqueado</div>
+  <p class="blk-msg">Seu acesso foi bloqueado.<br>Entre em contato com o administrador.</p>
+  <button class="blk-btn" onclick="contactSupport()">Falar com Suporte</button>
+</div>
+
+<!-- ADMIN -->
+<div class="scr" id="scr-admin">
+  <div class="adm-top">
+    <div class="adm-logo">⚙️ Admin — WorldSticker</div>
+    <div style="display:flex;gap:8px">
+      <button class="hbtn" style="font-size:11px" onclick="showScreen('scr-login')">← Voltar</button>
+      <button class="hbtn" style="font-size:11px;color:var(--red)" onclick="doAdmLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- Login admin -->
+  <div id="adm-login-box" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);margin-bottom:4px">🔐 Admin</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:24px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1px">Senha do administrador</div>
+    <div class="adm-login-card">
+      <input class="adm-inp" type="password" id="adm-pass-inp" placeholder="Digite a senha admin" autocomplete="current-password" onkeydown="if(event.key==='Enter')admLogin()">
+      <button class="adm-btn" onclick="admLogin()">Entrar →</button>
+      <div class="adm-err" id="adm-pass-err"></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600">Senha padrão: <span style="color:var(--gold)">admin2026</span></div>
+    </div>
+  </div>
+
+  <!-- Painel admin -->
+  <div id="adm-panel" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="adm-scroll">
+
+      <!-- ⚠️ AVISO PRINCIPAL -->
+      <div class="adm-alert">
+        <strong>⚠️ Como funciona o cadastro</strong>
+        Cadastre os usuários aqui, depois clique em <strong>"📥 Baixar arquivo atualizado"</strong>. Envie o novo arquivo HTML para os usuários. Os dados ficam salvos dentro do próprio arquivo.
+      </div>
+
+      <!-- Stats -->
+      <div class="adm-stats">
+        <div class="adm-stat"><div class="adm-sv" style="color:var(--gold)" id="as-total">0</div><div class="adm-sl">Usuários</div></div>
+        <div class="adm-stat"><div class="adm-sv" style="color:var(--green)" id="as-ativo">0</div><div class="adm-sl">Ativos</div></div>
+        <div class="adm-stat"><div class="adm-sv" style="color:var(--red)" id="as-bloq">0</div><div class="adm-sl">Bloqueados</div></div>
+      </div>
+
+      <!-- Cadastrar -->
+      <div class="adm-section">
+        <div class="adm-sec-title">➕ Cadastrar Novo Usuário</div>
+        <label class="lbl" style="color:var(--muted)">Nome completo *</label>
+        <input class="adm-inp" type="text" id="a-nome" placeholder="Ex: João Silva" autocorrect="off" autocapitalize="words">
+        <label class="lbl" style="color:var(--muted)">Data de nascimento *</label>
+        <input class="adm-inp" type="date" id="a-nasc">
+        <label class="lbl" style="color:var(--muted)">WhatsApp (opcional)</label>
+        <input class="adm-inp" type="tel" id="a-wpp" placeholder="83999999999">
+        <button class="adm-btn" onclick="admAddUser()">+ Cadastrar</button>
+        <div class="adm-err" id="a-err"></div>
+        <div class="adm-ok" id="a-ok"></div>
+      </div>
+
+      <!-- Importar lote -->
+      <div class="adm-section">
+        <div class="adm-sec-title">📋 Cadastro em Lote</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">
+          Uma por linha: <code style="background:var(--dark2);padding:2px 5px;border-radius:4px;font-size:11px">Nome, DD/MM/AAAA, WhatsApp</code>
+        </div>
+        <textarea class="csv-area" id="csv-inp" placeholder="João Silva, 15/06/2003, 83999999999&#10;Maria Santos, 22/11/1998&#10;Pedro Lima, 01/03/2005"></textarea>
+        <button class="adm-btn" onclick="admImportCSV()">📥 Importar Lista</button>
+        <div class="adm-ok" id="csv-res"></div>
+      </div>
+
+      <!-- Lista -->
+      <div class="adm-section">
+        <div class="adm-sec-title">👥 Usuários Cadastrados</div>
+        <input class="adm-search" type="search" id="adm-search" placeholder="Buscar nome..." oninput="renderAdmList(this.value)">
+        <div id="adm-user-list"></div>
+      </div>
+
+      <!-- EXPORTAR — seção mais importante -->
+      <div class="adm-section" style="border-color:rgba(245,197,24,.3)">
+        <div class="adm-sec-title" style="color:var(--gold)">📤 Gerar Arquivo com Usuários</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">
+          Após cadastrar todos os usuários, baixe o arquivo atualizado e envie o link para eles. Os dados de login ficam gravados dentro do arquivo HTML.
+        </div>
+        <button class="export-btn" onclick="downloadUpdatedFile()">📥 Baixar arquivo atualizado</button>
+        <div class="adm-ok" id="export-ok" style="text-align:center;margin-top:8px"></div>
+      </div>
+
+      <!-- Ações extras -->
+      <div class="adm-section">
+        <div class="adm-sec-title">⚙️ Outras Ações</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="adm-btn sec" onclick="admChangePass()">🔑 Alterar senha admin</button>
+          <button class="adm-btn danger" onclick="admClearAll()">🗑 Apagar todos os usuários</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="scr" id="scr-app">
+  <header>
+    <div class="htop">
+      <div class="logo">⚽ WorldSticker<div class="logo-sub" id="u-name">Copa 2026</div></div>
+      <div class="hbtns">
+        <button class="hbtn" onclick="doLogout()">Sair</button>
+        <button class="wbtn" onclick="shareWpp()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Trocas
+        </button>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi kp"><div class="kv" id="k-pct">0%</div><div class="kl">Progresso</div></div>
+      <div class="kpi kt"><div class="kv" id="k-have">0</div><div class="kl">✅ Tenho</div></div>
+      <div class="kpi kf"><div class="kv" id="k-miss">0</div><div class="kl">❌ Faltam</div></div>
+      <div class="kpi kr"><div class="kv" id="k-dup">0</div><div class="kl">🔄 Trocas</div></div>
+    </div>
+    <div class="pw">
+      <div class="pb"><div class="pf" id="prog" style="width:0%"></div></div>
+      <div class="pl"><span id="p-l">0 de 960</span><span id="p-r">0%</span></div>
+    </div>
+    <nav>
+      <button class="on" onclick="goTab('album',this)">📋 Álbum</button>
+      <button onclick="goTab('trocas',this)">🔄 Trocas</button>
+    </nav>
+  </header>
+  <main id="main">
+    <div id="tab-album">
+      <div class="sw"><span class="si">🔍</span><input type="search" placeholder="Buscar seleção..." oninput="filterGroups(this.value)"></div>
+      <div class="chips">
+        <div class="chip on" onclick="setFilter('all',this)">Todos</div>
+        <div class="chip" onclick="setFilter('miss',this)">❌ Faltam</div>
+        <div class="chip" onclick="setFilter('have',this)">✅ Tenho</div>
+        <div class="chip" onclick="setFilter('dup',this)">🔄 Trocas</div>
+      </div>
+      <div id="groups"></div>
+    </div>
+    <div id="tab-trocas" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px">🔄 Para Trocar</div>
+        <button class="wbtn" onclick="shareWpp()">
+          <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Compartilhar
+        </button>
+      </div>
+      <div id="trocas-list"></div>
+    </div>
+  </main>
+  <div class="bsafe"></div>
+</div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// GRUPOS
+// ══════════════════════════════════════════
+const GRUPOS={
+  A:[{n:"México",f:"🇲🇽"},{n:"África do Sul",f:"🇿🇦"},{n:"Coreia do Sul",f:"🇰🇷"},{n:"Rep. Tcheca",f:"🇨🇿"}],
+  B:[{n:"Canadá",f:"🇨🇦"},{n:"Bósnia",f:"🇧🇦"},{n:"Catar",f:"🇶🇦"},{n:"Suíça",f:"🇨🇭"}],
+  C:[{n:"Brasil",f:"🇧🇷"},{n:"Marrocos",f:"🇲🇦"},{n:"Haiti",f:"🇭🇹"},{n:"Escócia",f:"🏴"}],
+  D:[{n:"Estados Unidos",f:"🇺🇸"},{n:"Paraguai",f:"🇵🇾"},{n:"Austrália",f:"🇦🇺"},{n:"Turquia",f:"🇹🇷"}],
+  E:[{n:"Alemanha",f:"🇩🇪"},{n:"Curaçao",f:"🇨🇼"},{n:"Costa do Marfim",f:"🇨🇮"},{n:"Equador",f:"🇪🇨"}],
+  F:[{n:"Holanda",f:"🇳🇱"},{n:"Japão",f:"🇯🇵"},{n:"Suécia",f:"🇸🇪"},{n:"Tunísia",f:"🇹🇳"}],
+  G:[{n:"Bélgica",f:"🇧🇪"},{n:"Egito",f:"🇪🇬"},{n:"Irã",f:"🇮🇷"},{n:"Nova Zelândia",f:"🇳🇿"}],
+  H:[{n:"Espanha",f:"🇪🇸"},{n:"Cabo Verde",f:"🇨🇻"},{n:"Arábia Saudita",f:"🇸🇦"},{n:"Uruguai",f:"🇺🇾"}],
+  I:[{n:"França",f:"🇫🇷"},{n:"Senegal",f:"🇸🇳"},{n:"Iraque",f:"🇮🇶"},{n:"Noruega",f:"🇳🇴"}],
+  J:[{n:"Argentina",f:"🇦🇷"},{n:"Argélia",f:"🇩🇿"},{n:"Áustria",f:"🇦🇹"},{n:"Jordânia",f:"🇯🇴"}],
+  K:[{n:"Portugal",f:"🇵🇹"},{n:"Congo",f:"🇨🇩"},{n:"Uzbequistão",f:"🇺🇿"},{n:"Colômbia",f:"🇨🇴"}],
+  L:[{n:"Inglaterra",f:"🏴"},{n:"Croácia",f:"🇭🇷"},{n:"Gana",f:"🇬🇭"},{n:"Panamá",f:"🇵🇦"}]
+};
+const GC={A:"#00b894",B:"#0984e3",C:"#fdcb6e",D:"#6c5ce7",E:"#e17055",F:"#00cec9",G:"#fd79a8",H:"#e84393",I:"#55efc4",J:"#a29bfe",K:"#ff7675",L:"#74b9ff"};
+const TOTAL=12*4*20;
+
+// ══════════════════════════════════════════
+// USUÁRIOS — ficam gravados DENTRO DO ARQUIVO
+// Editados via painel admin e regravados no download
+// ══════════════════════════════════════════
+var USUARIOS_EMBED = []; // <<< LISTA EMBUTIDA — preenchida pelo admin e regravada no download
+
 // Carrega: prioridade localStorage (sessão do admin) > embed
 function loadUsers(){
   try{
